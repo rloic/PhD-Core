@@ -17,6 +17,13 @@ class Tensor3<T>(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
     operator fun set(i: Int, j: Int, k: Int, value: T) {
         data[DIMENSIONS.compose(i, j, k)] = value
     }
+    operator fun set(i: Int, value: Matrix<T>) {
+        for (j in 0 until dim2) {
+            for (k in 0 until dim3) {
+                data[DIMENSIONS.compose(i, j, k)] = value[j, k]
+            }
+        }
+    }
 
     fun deepFlatten() = data.toMutableList()
 

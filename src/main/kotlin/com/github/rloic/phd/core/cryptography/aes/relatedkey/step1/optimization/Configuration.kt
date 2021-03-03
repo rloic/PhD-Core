@@ -1,7 +1,7 @@
 package com.github.rloic.phd.core.cryptography.aes.relatedkey.step1.optimization
 
 import com.github.rloic.phd.core.cryptography.aes.checkKeySize
-import com.github.rloic.phd.core.cryptography.rijndael.relatedkey.step1.optimization.Configuration as RijndaelConfiguration
+import com.github.rloic.phd.core.cryptography.rijndael.differential.relatedkey.step1.optimization.Configuration as RijndaelConfiguration
 
 class Configuration(Nr: Int, keySize: Int): RijndaelConfiguration(Nr, 128, keySize){
     init {

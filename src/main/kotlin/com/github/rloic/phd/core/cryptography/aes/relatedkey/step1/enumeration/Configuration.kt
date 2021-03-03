@@ -1,7 +1,7 @@
 package com.github.rloic.phd.core.cryptography.aes.relatedkey.step1.enumeration
 
 import com.github.rloic.phd.core.cryptography.rijndael.checkNr
-import com.github.rloic.phd.core.cryptography.rijndael.relatedkey.step1.enumeration.Configuration as RijndaelConfiguration
+import com.github.rloic.phd.core.cryptography.rijndael.differential.relatedkey.step1.enumeration.Configuration as RijndaelConfiguration
 
 class Configuration(Nr: Int, keySize: Int, objStep1: Int): RijndaelConfiguration(Nr, 128, keySize, objStep1) {
     init {

@@ -5,7 +5,7 @@ import com.github.rloic.phd.core.arrays.IntTensor3
 import com.github.rloic.phd.core.utils.Presenter
 
 @Suppress("NonAsciiCharacters", "LocalVariableName")
-class PlainTextPresenter(private val out: Appendable) : Presenter<Solution> {
+class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Solution> {
 
     companion object {
         const val indent: Int = 2
@@ -24,7 +24,7 @@ class PlainTextPresenter(private val out: Appendable) : Presenter<Solution> {
         out.append(leftSpaces)
         out.appendLine(name)
         for (j in 0 until block.dim1) {
-            out.appendLine(leftSpaces)
+            out.append(leftSpaces)
             for (k in 0 until block.dim2) {
                 out.append(block[j, k].toHexString(2))
                 out.append(" ")

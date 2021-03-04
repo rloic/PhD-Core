@@ -9,7 +9,7 @@ open class Configuration(val Nr: Int, val blockSize: Int, val keySize: Int) {
     val Nb: Int get() = blockSize / 32
     val Nk: Int get() = keySize / 32
 
-    fun isSbColumn(ik: Int) =  ik >= Nk - 1 && ((ik % Nk == Nk - 1) || (Nk > 6 && ik % Nk == 3))
+    fun isSbColumn(ik: Int) =  ik >= Nk - 1 && (ik != Nb * (Nr + 1) - 1) && ((ik % Nk == Nk - 1) || (Nk > 6 && ik % Nk == 3))
 
     init {
         checkNr(Nr)

@@ -61,7 +61,8 @@ class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Soluti
         val Nb = data.config.Nb
 
         val plainText = IntMatrix(4, Nb) { j, k -> data.δX[0, j, k] xor data.δWK[j, k] }
-        val δK = IntTensor3(Nr, 4, Nb) { i, j, k -> data.δWK[j, i * Nb + k] }
+        val δK = IntTensor3(Nr + 1, 4, Nb) { i, j, k -> data.δWK[j, i * Nb + k] }
+        val cipherText = IntMatrix(4, Nb) { j, k -> data.δY[Nr - 1, j, k] xor δK[Nr, j, k] }
 
         displayPair("δPlainText:", plainText, "δK[0]:", δK[0])
 
@@ -75,5 +76,6 @@ class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Soluti
         display("δX[${Nr - 1}]:", data.δX[Nr - 1])
         display("δSX[${Nr - 1}]:", data.δSX[Nr - 1])
         display("δY[${Nr - 1}]:", data.δY[Nr - 1])
+        displayPair("δCipherText:", cipherText, "δK[$Nr]:", δK[Nr])
     }
 }

@@ -10,6 +10,14 @@ object Rijndael {
 
     val NB_ROWS = 4
 
+    val maxRounds = intArrayOf(
+        10, 11, 12, 13, 14,
+        11, 11, 12, 13, 14,
+        12, 12, 12, 13, 14,
+        13, 13, 13, 13, 14,
+        14, 14, 14, 14, 14,
+    ).reshape(5, 5)
+
     val shifts = intArrayOf(
         0, 1, 2, 3,
         0, 1, 2, 3,

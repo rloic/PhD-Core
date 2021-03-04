@@ -28,16 +28,9 @@ fun File.concat(other: File) {
 
 }
 
-fun mkDirs(path: String): File {
+fun dir(path: String): File {
     val file = File(path)
-
-    if (!file.exists()) {
-        file.mkdirs()
-    } else {
-        if (!file.isDirectory) {
-            throw RuntimeException("$file is not a directory")
-        }
-    }
-
+    if (!file.exists()) { file.mkdirs() }
+    if (!file.isDirectory) { throw RuntimeException("$file is not a directory") }
     return file
 }

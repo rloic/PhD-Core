@@ -22,7 +22,7 @@ class Dimensions(private val dims: IntArray) {
 
         var index = indices[0]
         for (i in 1 until indices.size) {
-            index *= dims[dims.size - i]
+            index *= dims[i]
             index += indices[i]
         }
 

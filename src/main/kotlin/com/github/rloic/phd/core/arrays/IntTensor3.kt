@@ -21,6 +21,7 @@ class IntTensor3(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
             }
         }
     }
+
     operator fun set(i: Int, j: Int, k: Int, value: Int) {
         data[DIMENSIONS.compose(i, j, k)] = value
     }
@@ -28,5 +29,24 @@ class IntTensor3(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
     fun deepFlatten() = data.copyOf()
     fun sum() = data.sum()
     fun toArrays() = Array(dim1) { i -> Array(dim2) { j -> IntArray(dim3) { k -> this[i, j, k] } } }
+
+    override fun toString() = buildString {
+        for (j in 0 until dim2) {
+            for (i in 0 until dim1) {
+                for (k in 0 until dim3) {
+                    append(this@IntTensor3[i, j, k])
+                    append(", ")
+                }
+                if (dim3 != 0) {
+                    setLength(length - 1)
+                }
+                append('\t')
+            }
+            if (dim1 != 0) {
+                setLength(length - 1)
+            }
+            appendLine()
+        }
+    }
 
 }

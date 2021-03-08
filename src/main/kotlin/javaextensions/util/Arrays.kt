@@ -9,6 +9,6 @@ fun IntArray.reshape(dim1: Int, dim2: Int): IntMatrix {
 }
 fun IntArray.reshape(dim1: Int, dim2: Int, dim3: Int): IntTensor3 {
     check(dim1 * dim2 * dim3 == size) { "IntArray of size $size cannot be reshaped to matrix of dims: [$dim1, $dim2, $dim3]" }
-    return IntTensor3(dim1, dim2, dim3) { i, j, k -> this[((i * dim3) + j) * dim2 + k] }
+    return IntTensor3(dim1, dim2, dim3) { i, j, k -> this[((i * dim2) + j) * dim3 + k] }
 }
 fun IntArray.mapToBool(fn: (Int) -> Boolean = { index -> this[index] != 0 }) = BooleanArray(size, fn)

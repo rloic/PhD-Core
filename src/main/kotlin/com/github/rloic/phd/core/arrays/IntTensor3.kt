@@ -13,6 +13,17 @@ class IntTensor3(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
     }
 
     operator fun get(i: Int) = IntMatrix(dim2, dim3) { j, k -> this[i, j, k] }
+    operator fun set(i: Int, j: Int, k: Int, value: Int) {
+        data[DIMENSIONS.compose(i, j, k)] = value
+    }
+
+    operator fun get(i: Int, j: Int) = IntArray(dim3) { k -> this[i, j, k] }
+    operator fun set(i: Int, j: Int, value: IntArray) {
+        for (k in 0 until dim3) {
+            data[DIMENSIONS.compose(i, j, k)] = value[k]
+        }
+    }
+
     operator fun get(i: Int, j: Int, k: Int) = data[DIMENSIONS.compose(i, j, k)]
     operator fun set(i: Int, value: IntMatrix) {
         for (j in 0 until dim2) {
@@ -22,9 +33,7 @@ class IntTensor3(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
         }
     }
 
-    operator fun set(i: Int, j: Int, k: Int, value: Int) {
-        data[DIMENSIONS.compose(i, j, k)] = value
-    }
+
 
     fun deepFlatten() = data.copyOf()
     fun sum() = data.sum()

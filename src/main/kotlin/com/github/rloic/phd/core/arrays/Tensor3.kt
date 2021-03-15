@@ -25,7 +25,9 @@ class Tensor3<T>(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
     }
 
     operator fun get(i: Int) = Matrix(dim2, dim3) { j, k -> this[i, j, k] }
+    operator fun get(i: Int, j: Int): List<T> = List(dim3) { k -> this[i, j, k] }
     operator fun get(i: Int, j: Int, k: Int) = data[DIMENSIONS.compose(i, j, k)]
+
     operator fun set(i: Int, j: Int, k: Int, value: T) {
         data[DIMENSIONS.compose(i, j, k)] = value
     }
@@ -39,8 +41,6 @@ class Tensor3<T>(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
     }
 
     fun deepFlatten() = data.toMutableList()
-
-    fun <U> map(fn: (T) -> U) = Tensor3(dim1, dim2, dim3) { i, j, k -> fn(this[i, j, k]) }
 
     override fun toString() = buildString {
         for (j in 0 until dim2) {
@@ -60,5 +60,7 @@ class Tensor3<T>(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
             appendLine()
         }
     }
+
+    fun <U> map(fn: (T) -> U): Tensor3<U> = Tensor3(dim1, dim2, dim3) { i, j, k -> fn(this[i, j, k]) }
 
 }

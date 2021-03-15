@@ -1,10 +1,10 @@
-package com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step1.optimization
+package com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step1.enumeration
+
+import com.github.rloic.phd.core.utils.Presenter
 
 import com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step1.CommonPlainTextSolutionPresenter
-import com.github.rloic.phd.core.utils.Presenter
-import java.lang.Appendable
 
-class PlainTextSolutionPresenter(out: Appendable): Presenter<Solution> {
+class PlainTextSolutionPresenter(out: Appendable) : Presenter<Solution> {
 
     private val delegate = CommonPlainTextSolutionPresenter(out)
 

@@ -1,6 +1,7 @@
 package com.github.rloic.phd.core.cryptography.rijndael
 
 import com.github.rloic.phd.core.cryptography.SboxTuples
+import javaextensions.io.getResourceAsFile
 import javaextensions.util.intArrayFrom
 import javaextensions.util.reshape
 import org.chocosolver.solver.constraints.extension.Tuples
@@ -30,11 +31,11 @@ object Rijndael {
       0, 1, 3, 4
    ).reshape(5, 4)
 
-   val SBOX = intArrayFrom(File(javaClass.classLoader.getResource("sboxes/rijndael/sb.txt")!!.toURI()))
-   val SBOX_INV = intArrayFrom(File(javaClass.classLoader.getResource("sboxes/rijndael/sb_inv.txt")!!.toURI()))
+   val SBOX = intArrayFrom(getResourceAsFile("sboxes/rijndael/sb.txt"))
+   val SBOX_INV = intArrayFrom(getResourceAsFile("sboxes/rijndael/sb_inv.txt"))
 
-   val OPTIMAL_SBOX_TRANSITION = intArrayFrom(File(javaClass.classLoader.getResource("sboxes/rijndael/best_sb_transition.txt")!!.toURI()))
-   val OPTIMAL_INV_SBOX_TRANSITION = intArrayFrom(File(javaClass.classLoader.getResource("sboxes/rijndael/best_sb_inv_transition.txt")!!.toURI()))
+   val OPTIMAL_SBOX_TRANSITION = intArrayFrom(getResourceAsFile("sboxes/rijndael/best_sb_transition.txt"))
+   val OPTIMAL_INV_SBOX_TRANSITION = intArrayFrom(getResourceAsFile("sboxes/rijndael/best_sb_inv_transition.txt"))
 
    val SBOX_TUPLES = SboxTuples.generate(SBOX)
 

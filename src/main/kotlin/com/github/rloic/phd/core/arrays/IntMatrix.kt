@@ -21,6 +21,8 @@ class IntMatrix(val dim1: Int, val dim2: Int, init: (Int, Int) -> Int) {
     fun deepFlatten() = data.copyOf()
     fun toArrays() = Array(dim1) { i -> Array(dim2) { j -> this[i, j] } }
 
+    fun <U> map(fn: (Int) -> U): Matrix<U> = Matrix(dim1, dim2) { i,j -> fn(this[i, j]) }
+
     override fun toString() = buildString {
         for (i in 0 until dim1) {
             for (j in 0 until dim2) {

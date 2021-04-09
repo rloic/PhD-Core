@@ -46,7 +46,9 @@ object Rijndael {
    val mul13: Tuples = buildTimes(13)
    val mul14: Tuples = buildTimes(14)
 
-   val XOR_TUPLES = generateXorTuples()
+    enum class BoomerangTable {
+        None, DDT, DDT2, BCT, UBCT, LBCT, EBCT
+    }
 
    private fun generateXorTuples(): Tuples {
       val tuples = Tuples()

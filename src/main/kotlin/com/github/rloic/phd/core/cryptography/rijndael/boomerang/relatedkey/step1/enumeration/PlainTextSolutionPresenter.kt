@@ -1,4 +1,4 @@
-package com.github.rloic.phd.core.cryptography.rijndael.boomerang.relatedkey.step1.optimization
+package com.github.rloic.phd.core.cryptography.rijndael.boomerang.relatedkey.step1.enumeration
 
 import com.github.rloic.phd.core.cryptography.rijndael.boomerang.relatedkey.step1.CommonPlainTextSolutionPresenter
 import com.github.rloic.phd.core.utils.Presenter

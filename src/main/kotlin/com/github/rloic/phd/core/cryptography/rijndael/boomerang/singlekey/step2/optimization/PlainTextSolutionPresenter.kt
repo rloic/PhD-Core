@@ -1,5 +1,6 @@
 package com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step2.optimization
 
+import com.github.rloic.phd.core.cryptography.rijndael.Rijndael
 import com.github.rloic.phd.core.io.Console.bg
 import com.github.rloic.phd.core.io.Console.color
 import com.github.rloic.phd.core.io.Console.reset
@@ -16,26 +17,26 @@ class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Soluti
         else "0x$hexStr"
     }
 
-    private fun color(table: Solution.Table, strValue: String): String {
+    private fun color(table: Rijndael.BoomerangTable, strValue: String): String {
         val colorCode = when(table) {
-            Solution.Table.None -> ""
-            Solution.Table.DDT -> color(0xffffff) + bg(0x846bca)
-            Solution.Table.DDT2 -> color(0xffffff) + bg(0x64a757)
-            Solution.Table.BCT -> color(0xffffff) + bg(0xc65d9e)
-            Solution.Table.UBCT -> color(0xffffff) + bg(0xb7923f)
-            Solution.Table.LBCT -> color(0xffffff) + bg(0x57a2cc)
-            Solution.Table.EBCT -> color(0xffffff) + bg(0xcb584c)
+            Rijndael.BoomerangTable.None -> ""
+            Rijndael.BoomerangTable.DDT -> color(0xffffff) + bg(0x846bca)
+            Rijndael.BoomerangTable.DDT2 -> color(0xffffff) + bg(0x64a757)
+            Rijndael.BoomerangTable.BCT -> color(0xffffff) + bg(0xc65d9e)
+            Rijndael.BoomerangTable.UBCT -> color(0xffffff) + bg(0xb7923f)
+            Rijndael.BoomerangTable.LBCT -> color(0xffffff) + bg(0x57a2cc)
+            Rijndael.BoomerangTable.EBCT -> color(0xffffff) + bg(0xcb584c)
         }
         return colorCode + strValue + reset()
     }
 
-    private fun formatLine(data: Solution, end: Boolean = false, tableSelector: ((Solution) -> List<Solution.Table>)? = null, rowSelector: (Solution) -> IntArray) {
+    private fun formatLine(data: Solution, end: Boolean = false, tableSelector: ((Solution) -> List<Rijndael.BoomerangTable>)? = null, rowSelector: (Solution) -> IntArray) {
         val line = rowSelector(data)
         val table = tableSelector?.invoke(data)
         for (k in 0 until data.config.Nb) {
             if (line[k] != 0) {
                 if (table == null) {
-                    out.append(color(Solution.Table.None, format(line[k]) + "  "))
+                    out.append(color(Rijndael.BoomerangTable.None, format(line[k]) + "  "))
                 } else {
                     out.append(color(table[k], format(line[k])) + "  ")
                 }
@@ -55,13 +56,13 @@ class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Soluti
 
         out.appendLine("Legend:")
         out.append(lightGrey("0x00") + ": Inactive byte        ")
-        out.appendLine(color(Solution.Table.None, "0x??") + ": No sbox transition")
-        out.append(color(Solution.Table.DDT, "0x??") + ": DDT Transition       ")
-        out.appendLine(color(Solution.Table.DDT2, "0x??") + ": DDT2 transition")
-        out.append(color(Solution.Table.BCT, "0x??") + ": BCT Transition       ")
-        out.appendLine(color(Solution.Table.UBCT, "0x??") + ": UBCT transition")
-        out.append(color(Solution.Table.LBCT, "0x??") + ": LBCT Transition      ")
-        out.appendLine(color(Solution.Table.EBCT, "0x??") + ": EBCT transition")
+        out.appendLine(color(Rijndael.BoomerangTable.None, "0x??") + ": No sbox transition")
+        out.append(color(Rijndael.BoomerangTable.DDT, "0x??") + ": DDT Transition       ")
+        out.appendLine(color(Rijndael.BoomerangTable.DDT2, "0x??") + ": DDT2 transition")
+        out.append(color(Rijndael.BoomerangTable.BCT, "0x??") + ": BCT Transition       ")
+        out.appendLine(color(Rijndael.BoomerangTable.UBCT, "0x??") + ": UBCT transition")
+        out.append(color(Rijndael.BoomerangTable.LBCT, "0x??") + ": LBCT Transition      ")
+        out.appendLine(color(Rijndael.BoomerangTable.EBCT, "0x??") + ": EBCT transition")
         out.appendLine()
 
         for (i in 0 until Nr) {

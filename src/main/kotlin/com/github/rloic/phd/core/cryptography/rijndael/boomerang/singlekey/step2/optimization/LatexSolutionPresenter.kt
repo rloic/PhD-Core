@@ -2,34 +2,34 @@ package com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step
 
 import com.github.rloic.phd.core.arrays.IntMatrix
 import com.github.rloic.phd.core.arrays.Matrix
-import com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step2.optimization.Solution.Table.*
+import com.github.rloic.phd.core.cryptography.rijndael.Rijndael
 import com.github.rloic.phd.core.utils.Presenter
 
 class LatexSolutionPresenter(private val out: Appendable) : Presenter<Solution> {
 
-    data class Column(val header: String, val value: IntMatrix, val table: Matrix<Solution.Table>? = null)
+    data class Column(val header: String, val value: IntMatrix, val table: Matrix<Rijndael.BoomerangTable>? = null)
 
     private fun setTTFont() = out.append("\\tt\n")
 
-    private fun colorize(table: Solution.Table?, value: String): String {
+    private fun colorize(table: Rijndael.BoomerangTable?, value: String): String {
         if (value == "0x00") {
             return "\\color{gray}{$value}"
         }
 
         val color = when (table) {
-            None, null -> "white"
-            DDT -> "cat1"
-            DDT2 -> "cat2"
-            BCT -> "cat3"
-            UBCT -> "cat4"
-            LBCT -> "cat5"
-            EBCT -> "cat6"
+            Rijndael.BoomerangTable.None, null -> "white"
+            Rijndael.BoomerangTable.DDT -> "cat1"
+            Rijndael.BoomerangTable.DDT2 -> "cat2"
+            Rijndael.BoomerangTable.BCT -> "cat3"
+            Rijndael.BoomerangTable.UBCT -> "cat4"
+            Rijndael.BoomerangTable.LBCT -> "cat5"
+            Rijndael.BoomerangTable.EBCT -> "cat6"
         }
 
         return "\\cellcolor{$color}{$value}"
     }
 
-    private fun colorize(table: Solution.Table?, i: Int): String {
+    private fun colorize(table: Rijndael.BoomerangTable?, i: Int): String {
         fun hex(i: Int): String {
             if (i == 256) return "FREE"
             if (i == 0) return "0x00"
@@ -111,19 +111,19 @@ class LatexSolutionPresenter(private val out: Appendable) : Presenter<Solution> 
         out.append(colorize(null, "0x??") + "&: active byte (no sbox)")
         out.append("\\\\\n")
 
-        out.append(colorize(DDT, "0x??") + "&: DDT Transition")
+        out.append(colorize(Rijndael.BoomerangTable.DDT, "0x??") + "&: DDT Transition")
         out.append(" & ")
-        out.append(colorize(DDT2, "0x??") + "&: DDT2 Transition")
+        out.append(colorize(Rijndael.BoomerangTable.DDT2, "0x??") + "&: DDT2 Transition")
         out.append("\\\\\n")
 
-        out.append(colorize(BCT, "0x??") + "&: BCT Transition")
+        out.append(colorize(Rijndael.BoomerangTable.BCT, "0x??") + "&: BCT Transition")
         out.append(" & ")
-        out.append(colorize(UBCT, "0x??") + "&: UBCT Transition")
+        out.append(colorize(Rijndael.BoomerangTable.UBCT, "0x??") + "&: UBCT Transition")
         out.append("\\\\\n")
 
-        out.append(colorize(LBCT, "0x??") + "&: LBCT Transition")
+        out.append(colorize(Rijndael.BoomerangTable.LBCT, "0x??") + "&: LBCT Transition")
         out.append(" & ")
-        out.append(colorize(EBCT, "0x??") + "&: EBCT Transition")
+        out.append(colorize(Rijndael.BoomerangTable.EBCT, "0x??") + "&: EBCT Transition")
         out.append("\\\\\n")
 
         out.append("\\end{tabular}\\\\ \\vspace{.5cm} \n")
@@ -132,7 +132,7 @@ class LatexSolutionPresenter(private val out: Appendable) : Presenter<Solution> 
     private fun tabular(
         columns: List<Column>,
         proba: Matrix<Int?>,
-        fn: (Solution.Table?, Int) -> String) {
+        fn: (Rijndael.BoomerangTable?, Int) -> String) {
         out.append("\\begin{tabular}{")
         for (i in 0 until columns.size) {
             out.append('|')

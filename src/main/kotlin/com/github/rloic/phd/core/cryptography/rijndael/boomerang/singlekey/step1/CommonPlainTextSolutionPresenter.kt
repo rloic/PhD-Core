@@ -35,7 +35,6 @@ class CommonPlainTextSolutionPresenter(val out: Appendable) {
                             isDDT2[i, j, k] == 1 -> out.append(ddt2(content))
                             else -> out.append(noTransition(content))
                         }
-
                     } else {
                         out.append(zero(" 0 "))
                     }

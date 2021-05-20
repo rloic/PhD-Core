@@ -31,6 +31,8 @@ object Rijndael {
       0, 1, 3, 4
    ).reshape(5, 4)
 
+   val XOR_TUPLES = generateXorTuples()
+
    val SBOX = intArrayFrom(getResourceAsFile("sboxes/rijndael/sb.txt"))
    val SBOX_INV = intArrayFrom(getResourceAsFile("sboxes/rijndael/sb_inv.txt"))
 

@@ -64,6 +64,8 @@ class PlainTextSolutionPresenter(private val out: Appendable) : Presenter<Soluti
         val δK = IntTensor3(Nr + 1, 4, Nb) { i, j, k -> data.δWK[j, i * Nb + k] }
         val cipherText = IntMatrix(4, Nb) { j, k -> data.δY[Nr - 1, j, k] xor δK[Nr, j, k] }
 
+        println("Probability: $2^{${data.objStep2}}$")
+
         displayPair("δPlainText:", plainText, "δK[0]:", δK[0])
 
         for (i in 0 until Nr - 1) {

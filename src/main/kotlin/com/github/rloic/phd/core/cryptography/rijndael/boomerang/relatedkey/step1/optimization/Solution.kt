@@ -27,13 +27,17 @@ class Solution(
     val ΔWKlower: IntMatrix,
     val freeWKlower: IntMatrix,
     val freeSWKlower: IntMatrix,
-    val isTable: IntTensor3,
-    val isDDT2: IntTensor3,
-    val isTableKey: IntMatrix,
-    val isDDT2Key: IntMatrix
 ) {
 
     val Nb get() = config.Nb
     val Nk get() = config.Nk
+
+    fun ΔSubKeyUpper(i: Int) = IntMatrix(4, config.Nb) { j, k -> ΔWKupper[j, i * config.Nb + k] }
+    fun ΔSubKeyLower(i: Int) = IntMatrix(4, config.Nb) { j, k -> ΔWKupper[j, i * config.Nb + k] }
+
+    fun isFreeSubKeyUpper(i: Int) = IntMatrix(4, config.Nb) { j, k -> freeWKupper[j, i * config.Nb + k] }
+    fun isFreeSBSubKeyUpper(i: Int) = IntMatrix(4, config.Nb) { j, k -> freeSWKupper[j, i * config.Nb + k] }
+    fun isFreeSubKeyLower(i: Int) = IntMatrix(4, config.Nb) { j, k -> freeWKlower[j, i * config.Nb + k] }
+    fun isFreeSBSubKeyLower(i: Int) = IntMatrix(4, config.Nb) { j, k -> freeSWKlower[j, i * config.Nb + k] }
 
 }

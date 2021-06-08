@@ -15,7 +15,7 @@ object Rijndael {
 
    val NB_ROWS = 4
 
-   val maxRounds = intArrayOf(
+   val MAX_ROUNDS = intArrayOf(
       10, 11, 12, 13, 14,
       11, 11, 12, 13, 14,
       12, 12, 12, 13, 14,
@@ -47,10 +47,6 @@ object Rijndael {
    val mul11: Tuples = buildTimes(11)
    val mul13: Tuples = buildTimes(13)
    val mul14: Tuples = buildTimes(14)
-
-    enum class BoomerangTable {
-        None, DDT, DDT2, BCT, UBCT, LBCT, EBCT
-    }
 
    private fun generateXorTuples(): Tuples {
       val tuples = Tuples()

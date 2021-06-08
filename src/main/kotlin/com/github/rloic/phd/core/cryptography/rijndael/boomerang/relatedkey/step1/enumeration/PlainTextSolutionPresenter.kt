@@ -8,16 +8,16 @@ class PlainTextSolutionPresenter(out: Appendable) : Presenter<Solution> {
     private val delegate = CommonPlainTextSolutionPresenter(out)
 
     override fun present(data: Solution) {
-        delegate.present(data.config.Nr, data.config.Nb, data.config.Nk, data.config::isSbColumn,
-        data.ΔXupper, data.freeXupper, data.freeSBupper,
-        data.ΔYupper, data.freeYupper,
-        data.ΔZupper, data.freeZupper,
-        data.ΔWKupper, data.freeWKupper, data.freeSWKupper,
-        data.ΔXlower, data.freeXlower, data.freeSBlower,
-        data.ΔYlower, data.freeYlower,
-        data.ΔZlower, data.freeZlower,
-        data.ΔWKlower, data.freeWKlower, data.freeSWKlower,
-        data.isTable, data.isDDT2,
-        data.isTableKey, data.isDDT2Key)
+        delegate.present(
+            data.config.Nr, data.config.Nb, data.config.Nk, data.config::isSbColumn,
+            data.ΔXupper, data.freeXupper, data.freeSBupper,
+            data.ΔYupper, data.freeYupper,
+            data.ΔZupper, data.freeZupper,
+            data.ΔWKupper, data.freeWKupper, data.freeSWKupper,
+            data.ΔXlower, data.freeXlower, data.freeSBlower,
+            data.ΔYlower, data.freeYlower,
+            data.ΔZlower, data.freeZlower,
+            data.ΔWKlower, data.freeWKlower, data.freeSWKlower,
+        )
     }
 }

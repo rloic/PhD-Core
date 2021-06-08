@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 fun <T> matrixOfNulls(dim1: Int, dim2: Int): Matrix<T?> = Matrix(dim1, dim2) { _, _ -> null }
 class Matrix<T>(val dim1: Int, val dim2: Int, init: (Int, Int) -> T) {
 

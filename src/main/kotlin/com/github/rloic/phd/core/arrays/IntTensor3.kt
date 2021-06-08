@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 fun IntTensor3(dim1: Int, dim2: Int, dim3: Int) = IntTensor3(dim1, dim2, dim3) { _, _, _ -> 0 }
 class IntTensor3(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, Int) -> Int) {
 

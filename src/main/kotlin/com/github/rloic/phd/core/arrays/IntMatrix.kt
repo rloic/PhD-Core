@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 fun IntMatrix(dim1: Int, dim2: Int) = IntMatrix(dim1, dim2) { _, _ -> 0 }
 class IntMatrix(val dim1: Int, val dim2: Int, init: (Int, Int) -> Int) {
 

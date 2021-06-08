@@ -12,8 +12,7 @@ class PlainTextSolutionPresenter(out: Appendable) : Presenter<Solution> {
         delegate.present(
             data.config.Nr, data.config.Nb,
             data.ΔXupper, data.freeXupper,
-            data.ΔXlower, data.freeXlower,
-            data.isTable, data.isDDT2
+            data.ΔXlower, data.freeXlower
         )
     }
 }

@@ -1,4 +1,4 @@
-package arrays
+package com.github.rloic.phd.core.arrays
 
 class Dimensions(private val dims: IntArray) {
     fun decompose(idx: Int): IntArray {

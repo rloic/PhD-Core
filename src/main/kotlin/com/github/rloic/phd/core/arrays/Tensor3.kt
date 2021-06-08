@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 fun <T> tensor3OfNulls(dim1: Int, dim2: Int, dim3: Int): Tensor3<T?> = Tensor3(dim1, dim2, dim3) { _, _, _ -> null }
 fun <T> Tensor3(dim1: Int, init: (Int) -> Matrix<T>): Tensor3<T> {
     val matrices = mutableListOf<Matrix<T>>()

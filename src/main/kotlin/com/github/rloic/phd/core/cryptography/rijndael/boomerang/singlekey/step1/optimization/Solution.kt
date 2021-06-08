@@ -11,8 +11,6 @@ class Solution(
     val ΔXlower: IntTensor3,
     val freeXlower: IntTensor3,
     val freeSBlower: IntTensor3,
-    val isTable: IntTensor3,
-    val isDDT2: IntTensor3
 ) {
 
     val Nb get() = config.Nb

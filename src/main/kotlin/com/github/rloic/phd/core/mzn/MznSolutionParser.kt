@@ -9,8 +9,9 @@ interface MznSolutionParser<T>: Parser<MznSolution, T> {
 
     fun toLinear(cells: String) = cells
         .substringAfter('[')
-        .substringBefore(']')
+        .substringBeforeLast(']')
         .split(',')
+        .filterNot { it.isBlank() }
         .mapToInt { if (it.equals("true", false) || it == "1") 1 else 0 }
 
     fun String.parseObjective() = substringAfter("= ").substringBeforeLast(';').toInt()

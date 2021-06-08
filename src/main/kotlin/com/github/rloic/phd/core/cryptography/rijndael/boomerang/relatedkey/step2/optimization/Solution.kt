@@ -4,7 +4,7 @@ import com.github.rloic.phd.core.arrays.IntMatrix
 import com.github.rloic.phd.core.arrays.IntTensor3
 import com.github.rloic.phd.core.arrays.Matrix
 import com.github.rloic.phd.core.arrays.Tensor3
-import com.github.rloic.phd.core.cryptography.rijndael.Rijndael
+import com.github.rloic.phd.core.cryptography.boomerang.BoomerangTable
 import com.github.rloic.phd.core.cryptography.rijndael.boomerang.relatedkey.step1.enumeration.Configuration
 
 class Solution(
@@ -23,7 +23,15 @@ class Solution(
     val δWKlower: IntMatrix,
     val δSWKlower: Matrix<Int?>,
     val proba: Tensor3<Int?>,
-    val table: Tensor3<Rijndael.BoomerangTable>,
+    val table: Tensor3<BoomerangTable>,
     val keyProba: Matrix<Int?>,
-    val keyTable: Matrix<Rijndael.BoomerangTable>
-)
+    val keyTable: Matrix<BoomerangTable>
+) {
+
+    fun subKeyUpper(i: Int) = IntMatrix(4, config.Nb) { j, k -> δWKupper[j, i * config.Nb + k] }
+    fun sBsubKeyUpper(i: Int) = Matrix(4, config.Nb) { j, k -> δSWKupper[j, i * config.Nb + k] }
+    fun subKeyLower(i: Int) = IntMatrix(4, config.Nb) { j, k -> δWKlower[j, i * config.Nb + k] }
+    fun sBsubKeyLower(i: Int) = Matrix(4, config.Nb) { j, k -> δSWKlower[j, i * config.Nb + k] }
+    fun subKeyTable(i: Int) = Matrix(4, config.Nb) { j, k -> keyTable[j, i * config.Nb + k] }
+
+}

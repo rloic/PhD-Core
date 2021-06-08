@@ -25,10 +25,6 @@ class Solution(
     val ΔWKlower: IntMatrix,
     val freeWKlower: IntMatrix,
     val freeSWKlower: IntMatrix,
-    val isTable: IntTensor3,
-    val isDDT2: IntTensor3,
-    val isTableKey: IntMatrix,
-    val isDDT2Key: IntMatrix
 ) {
 
     val Nb get() = config.Nb

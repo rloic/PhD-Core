@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 class Tensor4<T>(val dim1: Int, val dim2: Int, val dim3: Int, val dim4: Int, init: (Int, Int, Int, Int) -> T) {
 
     private val DIMENSIONS = Dimensions(intArrayOf(dim1, dim2, dim3, dim4))

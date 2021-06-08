@@ -1,7 +1,5 @@
 package com.github.rloic.phd.core.arrays
 
-import arrays.Dimensions
-
 fun <T> tensor5OfNulls(dim1: Int, dim2: Int, dim3: Int, dim4: Int, dim5: Int): Tensor5<T?> = Tensor5(dim1, dim2, dim3,dim4, dim5) { _,_,_,_,_ -> null }
 class Tensor5<T>(
     val dim1: Int,

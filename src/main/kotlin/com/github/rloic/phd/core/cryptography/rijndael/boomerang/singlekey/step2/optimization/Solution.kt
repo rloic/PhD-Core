@@ -2,6 +2,7 @@ package com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step
 
 import com.github.rloic.phd.core.arrays.IntTensor3
 import com.github.rloic.phd.core.arrays.Tensor3
+import com.github.rloic.phd.core.cryptography.boomerang.BoomerangTable
 import com.github.rloic.phd.core.cryptography.rijndael.Rijndael
 import com.github.rloic.phd.core.cryptography.rijndael.boomerang.singlekey.step1.enumeration.Configuration
 
@@ -18,5 +19,5 @@ class Solution(
     val δYlower: IntTensor3,
     val δZlower: IntTensor3,
     val proba: Tensor3<Int?>,
-    val table: Tensor3<Rijndael.BoomerangTable>,
+    val table: Tensor3<BoomerangTable>,
 )

@@ -7,7 +7,7 @@ fun parseArgs(args: Array<String>, delimiter: String = "=") = args.map {
     val key = it.substring(0, idx)
     val value = it.substring(idx + delimiter.length)
     Pair(key, value)
-}.toMap()
+}.toMap().toMutableMap()
 
 class MissingArgumentException (argName: String): RuntimeException("Argument $argName is missing.")
 

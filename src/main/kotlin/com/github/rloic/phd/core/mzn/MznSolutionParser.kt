@@ -16,7 +16,7 @@ interface MznSolutionParser<T>: Parser<MznSolution, T> {
 
     fun String.parseObjective() = substringAfter("= ").substringBeforeLast(';').toInt()
 
-    fun List<String>.getIntLinear(key: String) = toLinear(first { it.startsWith(key) })
+    fun List<String>.getIntArray(key: String) = toLinear(first { it.startsWith(key) })
 
     fun List<String>.getIntValue(key: String) = first { it.startsWith(key) }.parseObjective()
 

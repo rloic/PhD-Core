@@ -8,8 +8,6 @@ import java.util.*
 
 object Latex {
 
-    private val random = Random()
-
     fun <T> preview(fn: (Appendable) -> Presenter<T>, data: T) {
         val rawContent = StringBuilder()
         val presenter = fn(rawContent)

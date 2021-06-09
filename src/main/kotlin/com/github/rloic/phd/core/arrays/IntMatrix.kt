@@ -10,6 +10,7 @@ class IntMatrix(val dim1: Int, val dim2: Int, init: (Int, Int) -> Int) {
         init(i, j)
     }
 
+    operator fun get(i: Int) = IntArray(dim2) { j -> data[DIMENSIONS.compose(i, j)] }
     operator fun get(i: Int, j: Int) = data[DIMENSIONS.compose(i, j)]
     operator fun set(i: Int, j: Int, value: Int) {
         data[DIMENSIONS.compose(i, j)] = value

@@ -1,73 +1,114 @@
 package com.github.rloic.phd.core.cryptography.attacks.boomerang
 
+import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.BoomerangSbVar
+import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.BoomerangOptionalSbVar
+
 object BoomerangRules {
 
+    fun table(variable: BoomerangSbVar): BoomerangTable {
+        return table(
+            variable.Δ.upper, variable.free.upper, variable.freeS.upper,
+            variable.Δ.lower, variable.free.lower, variable.freeS.lower,
+        )
+    }
+
+    fun table(variable: BoomerangOptionalSbVar): BoomerangTable {
+        return table(
+            variable.Δ.upper, variable.free.upper, variable.freeS?.upper,
+            variable.Δ.lower, variable.free.lower, variable.freeS?.lower,
+        )
+    }
+
+    fun table(
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ): BoomerangTable {
+        return when {
+            isDDT(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.DDT
+            isDDT2(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.DDT2
+            isBCT(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.BCT
+            isUBCT(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.UBCT
+            isLBCT(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.LBCT
+            isEBCT(
+                DXupper,
+                freeXupper,
+                freeSBupper,
+                DXlower,
+                freeXlower,
+                freeSBlower
+            ) -> BoomerangTable.EBCT
+            else -> BoomerangTable.None
+        }
+    }
+
     fun isDDT(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
     ) =
-        (!(DXupper) && DXlower && !(freeXlower) && !(freeSBlower)) || (DXupper && !(freeXupper) && !(freeSBupper) && !(DXlower))
+        ((DXupper == 0) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0)) ||
+                (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && (DXlower == 0))
 
     fun isBCT(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
-    ) = (DXupper && !(freeXupper) && freeSBupper && DXlower && freeXlower && !(freeSBlower))
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && freeSBupper == 1 && DXlower == 1 && freeXlower == 1 && (freeSBlower == 0))
 
     fun isDDT2(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
     ) =
-        (DXupper && !(freeXupper) && !(freeSBupper) && DXlower && freeXlower && freeSBlower) || (DXupper && freeXupper && freeSBupper && DXlower && !(freeXlower) && !(freeSBlower))
+        (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && freeSBlower == 1) ||
+                (DXupper == 1 && freeXupper == 1 && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
     fun isUBCT(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
-    ) = (DXupper && !(freeXupper) && !(freeSBupper) && DXlower && freeXlower && !(freeSBlower))
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && (freeSBlower == 0))
 
     fun isLBCT(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
-    ) = (DXupper && !(freeXupper) && freeSBupper && DXlower && !(freeXlower) && !(freeSBlower))
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
     fun isEBCT(
-        DXupper: Boolean, freeXupper: Boolean, freeSBupper: Boolean,
-        DXlower: Boolean, freeXlower: Boolean, freeSBlower: Boolean,
-    ) = (DXupper && !(freeXupper) && !(freeSBupper) && DXlower && !(freeXlower) && !(freeSBlower))
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 1) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
-    fun isDDT(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isDDT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isDDT(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isDDT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isDDT2(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isDDT2(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isDDT2(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isDDT2(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isBCT(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isBCT(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isUBCT(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isUBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isUBCT(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isUBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isLBCT(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isLBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isLBCT(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isLBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isEBCT(DXupper: Int, freeXUpper: Int, freeSBupper: Int, DXlower: Int, freeXlower: Int, freeSBlower: Int) =
-        isEBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
-
-    fun isEBCT(DXupper: Int?, freeXUpper: Int?, freeSBupper: Int?, DXlower: Int?, freeXlower: Int?, freeSBlower: Int?) =
-        isEBCT(DXupper == 1, freeXUpper == 1, freeSBupper == 1, DXlower == 1, freeXlower == 1, freeSBlower == 1)
 
 }

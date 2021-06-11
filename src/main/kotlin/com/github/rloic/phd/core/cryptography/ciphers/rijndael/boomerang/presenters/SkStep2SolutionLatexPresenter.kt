@@ -5,21 +5,13 @@ import com.github.rloic.phd.core.arrays.Matrix
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.BoomerangTable
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.BoomerangTable.*
 import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.OptimizeRkStep2Solution
+import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.OptimizeSkStep2Solution
 import com.github.rloic.phd.core.utils.Presenter
 import java.io.Closeable
 import java.io.IOException
 
 @Suppress("NonAsciiCharacters")
-class OptimizeRkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeRkStep2Solution> {
-
-    data class SboxInformations(
-        val Xupper: IntMatrix,
-        val freeUpper: IntMatrix,
-        val freeSBupper: IntMatrix,
-        val Xlower: IntMatrix,
-        val freeLower: IntMatrix,
-        val freeSBlower: IntMatrix
-    )
+class SkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeSkStep2Solution> {
 
     private fun hexa(n: Int): String {
         if (n == 0) return "\\textcolor{gray}{0x00}"
@@ -91,7 +83,7 @@ class OptimizeRkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<Opt
         appendLine("    }")
     }
 
-    override fun present(data: OptimizeRkStep2Solution) {
+    override fun present(data: OptimizeSkStep2Solution) {
 
         out.appendLine("\\documentclass[preview]{standalone}")
         out.appendLine("\\usepackage[utf8]{inputenc}")
@@ -128,14 +120,6 @@ class OptimizeRkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<Opt
         out.appendLine("  \\node[fill=LBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -7) {$\\mathtt{LBCT}$};")
         out.appendLine("  \\node[fill=EBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -8) {$\\mathtt{EBCT}$};")
 
-
-        out.appendBlock((data.config.Nb + 1) * 0,  -4, data.subKeyUpper(0), "$ RK_{0}^{\\Uparrow} $", data.subKeyTable(0))
-        out.appendBlock((data.config.Nb + 1) * 0, 1, data.subSKeyUpper(0), "$ SRK_{0}^{\\Uparrow} $", data.subKeyTable(0))
-
-        out.appendBlock((data.config.Nb + 1) * 3, - 4, data.subKeyLower(0), "$ RK_{0}^{\\Downarrow} $",data.subKeyTable(0))
-        out.appendBlock((data.config.Nb + 1) * 3, 1, data.subSKeyLower(0), "$ SRK_{0}^{\\Downarrow} $", data.subKeyTable(0))
-
-
         for (i in 0 until data.config.Nr) {
             // X
             out.appendBlock((data.config.Nb + 1) * 1, 21 * i, data.δXupper[i], "$ X_{$i}^{\\Uparrow} $", data.table[i])
@@ -153,20 +137,7 @@ class OptimizeRkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<Opt
             if (i < data.config.Nr - 1) {
                 out.appendBlock((data.config.Nb + 1) * 1, 21 * i + 15, data.δZupper[i], "$ Z_{$i}^{\\Uparrow} $")
                 out.appendBlock((data.config.Nb + 1) * 2, 21 * i + 15, data.δZlower[i], "$ Z_{$i}^{\\Downarrow} $")
-
-                out.appendBlock((data.config.Nb + 1) * 0, 21 * (i + 1) - 4, data.subKeyUpper(i + 1), "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-                out.appendBlock((data.config.Nb + 1) * 0, 21 * (i + 1) + 1, data.subSKeyUpper(i + 1), "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-
-                out.appendBlock((data.config.Nb + 1) * 3, 21 * (i + 1) - 4, data.subKeyLower(i + 1), "$ RK_{${i + 1}}^{\\Downarrow} $",data.subKeyTable(i + 1))
-                out.appendBlock((data.config.Nb + 1) * 3, 21 * (i + 1) + 1, data.subSKeyLower(i + 1), "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
-            } else {
-                out.appendBlock((data.config.Nb + 1) * 0, 21 * (i + 1) - 9, data.subKeyUpper(i + 1), "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-                out.appendBlock((data.config.Nb + 1) * 0, 21 * (i + 1) - 4, data.subSKeyUpper(i + 1), "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-
-                out.appendBlock((data.config.Nb + 1) * 3, 21 * (i + 1) - 9, data.subKeyLower(i + 1), "$ RK_{${i + 1}}^{\\Downarrow} $",data.subKeyTable(i + 1))
-                out.appendBlock((data.config.Nb + 1) * 3, 21 * (i + 1) - 4, data.subSKeyLower(i + 1), "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
             }
-
         }
 
         out.appendLine("	\\end{tikzpicture}")

@@ -25,6 +25,6 @@ open class RkRijndael(Nr: Int, textSize: TextSize, val keySize: KeySize): SkRijn
    @Override
    fun copy(Nr: Int = this.Nr, textSize: TextSize = this.textSize, keySize: KeySize = this.keySize) = RkRijndael(Nr, textSize, keySize)
 
-   override fun toString() = "RkRijndael(Nr=$Nr, Nb=$Nb, Nk=$Nk)"
+   override fun toString() = "RkRijndael(Nr=$Nr, TextSize=${textSize.nbBits}, KeySize=${keySize.nbBits})"
 
 }

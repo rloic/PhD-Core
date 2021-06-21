@@ -79,9 +79,24 @@ object BoomerangRules {
     fun isDDT(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
-    ) =
-        ((DXupper == 0) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0)) ||
-                (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && (DXlower == 0))
+    ) = isDDTupper(DXupper, freeXupper, freeSBupper, DXlower, freeXlower, freeSBlower) || isDDTLower(
+        DXupper,
+        freeXupper,
+        freeSBupper,
+        DXlower,
+        freeXlower,
+        freeSBlower
+    )
+
+    fun isDDTupper(
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && (DXlower == 0))
+
+    fun isDDTLower(
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = ((DXupper == 0) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
     fun isBCT(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
@@ -91,24 +106,36 @@ object BoomerangRules {
     fun isDDT2(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
-    ) =
-        (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && freeSBlower == 1) ||
-                (DXupper == 1 && freeXupper == 1 && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
+    ) = isDDT2Upper(DXupper, freeXupper, freeSBupper, DXlower, freeXlower, freeSBlower) || isDDT2Lower(DXupper, freeXupper, freeSBupper, DXlower, freeXlower, freeSBlower)
+
+
+    fun isDDT2Upper(
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && freeSBlower == 1)
+
+    fun isDDT2Lower(
+        DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
+        DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
+    ) = (DXupper == 1 && freeXupper == 1 && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
     fun isUBCT(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
-    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && (freeSBlower == 0))
+    ) =
+        (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && DXlower == 1 && freeXlower == 1 && (freeSBlower == 0))
 
     fun isLBCT(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
-    ) = (DXupper == 1 && (freeXupper == 0) && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
+    ) =
+        (DXupper == 1 && (freeXupper == 0) && freeSBupper == 1 && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
     fun isEBCT(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
-    ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 1) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
+    ) =
+        (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 1) && DXlower == 1 && (freeXlower == 0) && (freeSBlower == 0))
 
 
 }

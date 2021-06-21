@@ -7,17 +7,33 @@ object Console {
     val WARN = "${warn(" WARN ", fg = true, bg = true)}"
     val ERR = "${error(" ERR  ", fg = true, bg = true)}"
 
-    fun success(s: String, fg: Boolean = true, bg: Boolean = false) =
-        (if (fg) color(0x3c763d) else "") + (if (bg) bg(0xdff0d8) else "") + s + reset()
+    fun success(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) { append(color(0x3c763d)) }
+        if (bg) { append(bg(0xdff0d8)) }
+        append(s)
+        append(reset())
+    }
 
-    fun error(s: String, fg: Boolean = true, bg: Boolean = false) =
-        (if (fg) color(0xa94442) else "") + (if (bg) bg(0xf2dede) else "") + s + reset()
+    fun error(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) { append(color(0xa94442)) }
+        if (bg) { append(bg(0xf2dede)) }
+        append(s)
+        append(reset())
+    }
 
-    fun warn(s: String, fg: Boolean = true, bg: Boolean = false) =
-        (if (fg) color(0x8a6d3b) else "") + (if (bg) bg(0xfcf8e3) else "") + s + reset()
+    fun warn(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) { append(color(0x8a6d3b)) }
+        if (bg) { append(bg(0xfcf8e3)) }
+        append(s)
+        append(reset())
+    }
 
-    fun info(s: String, fg: Boolean = true, bg: Boolean = false) =
-        (if (fg) color(0x31708f) else "") + (if (bg) bg(0xd9edf7) else "") + s + reset()
+    fun info(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) { append(color(0x31708f)) }
+        if (bg) { append(bg(0xd9edf7)) }
+        append(s)
+        append(reset())
+    }
 
     private fun hexaToRgb(hexa: Int) = intArrayOf(
         (hexa shr 16) and 0xFF,

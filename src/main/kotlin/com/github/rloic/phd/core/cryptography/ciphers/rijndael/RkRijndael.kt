@@ -19,7 +19,7 @@ open class RkRijndael(Nr: Int, textSize: TextSize, val keySize: KeySize): SkRijn
 
    fun isSbColumn(ik: Int): Boolean {
       val nextIk = ik + 1
-      return nextIk in (Nk until Nb * (Nr + 1)) && (nextIk % Nk == 0 || (Nk > 6 && nextIk % 4 == 0))
+      return nextIk in (Nk until Nb * (Nr + 1)) && (nextIk % Nk == 0 || (Nk > 6 && nextIk % Nk == 4))
    }
 
    @Override

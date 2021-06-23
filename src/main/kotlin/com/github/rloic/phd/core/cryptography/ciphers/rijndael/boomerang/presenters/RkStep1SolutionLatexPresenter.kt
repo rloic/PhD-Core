@@ -39,13 +39,13 @@ class RkStep1SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
     }
 
     fun Appendable.appendLinearBlock(
-        x: Int,
         y: Int,
+        x: Int,
         variables: Matrix<BoomerangLinVar>,
         trailSelector: (TrailVar) -> Int,
         name: String? = null,
     ) {
-        block(y, -x, variables.dim2, variables.dim1) {
+        block(x, -y, variables.dim1, variables.dim2) {
             if (name != null) {
                 appendLine("        \\node at (${variables.dim2 / 2}, 4.3) { $name };")
             }
@@ -77,15 +77,15 @@ class RkStep1SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
     }
 
     fun Appendable.appendSbBlock(
-        x: Int,
         y: Int,
+        x: Int,
         variables: Matrix<BoomerangSbVar>,
         trailSelector: (TrailVar) -> Int,
         freeSelector: (BoomerangSbVar) -> TrailVar,
         name: String? = null,
         table: Matrix<BoomerangTable>? = null
     ) {
-        block(y, -x, variables.dim2, variables.dim1) {
+        block(x, -y, variables.dim1, variables.dim2) {
             if (name != null) {
                 appendLine("        \\node at (${variables.dim2 / 2}, 4.3) { $name };")
             }
@@ -125,15 +125,15 @@ class RkStep1SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
     }
 
     fun Appendable.appendKey(
-        x: Int,
         y: Int,
+        x: Int,
         variables: Matrix<BoomerangOptionalSbVar>,
         trailSelector: (TrailVar) -> Int,
         freeSelector: (BoomerangOptionalSbVar) -> TrailVar?,
         name: String? = null,
         table: Matrix<BoomerangTable>? = null
     ) {
-        block(y, -x, variables.dim2, variables.dim1, "dotted") {
+        block(x, -y, variables.dim1, variables.dim2, "dotted") {
             if (name != null) {
                 appendLine("        \\node at (${variables.dim2 / 2}, 4.3) { $name };")
             }
@@ -200,41 +200,49 @@ class RkStep1SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         out.appendLine("  \\node[fill=LBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -7) {$\\mathtt{LBCT}$};")
         out.appendLine("  \\node[fill=EBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -8) {$\\mathtt{EBCT}$};")
 
-        out.appendKey((data.config.Nb + 1) * 0, -4, data.subKey(0), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{0}^{\\Uparrow} $", data.subKeyTable(0))
-        out.appendKey((data.config.Nb + 1) * 0, 1, data.subKey(0), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{0}^{\\Uparrow} $", data.subKeyTable(0))
+        val UPPER_KEY = 0
+        val UPPER_TRAIL = 5
+        val LOWER_TRAIL = 10
+        val LOWER_KEY = 15
 
-        out.appendKey((data.config.Nb + 1) * 3, -4, data.subKey(0), TrailVar::lower, BoomerangOptionalSbVar::free, "$ RK_{0}^{\\Downarrow} $", data.subKeyTable(0))
-        out.appendKey((data.config.Nb + 1) * 3, 1, data.subKey(0), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{0}^{\\Downarrow} $", data.subKeyTable(0))
+        val SHIFT = data.config.Nb + 1
+        val ROUND_WIDTH = (SHIFT * 4 + 1)
+
+        out.appendKey(UPPER_KEY, -SHIFT + 1, data.subKey(0), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{0}^{\\Uparrow} $", data.subKeyTable(0))
+        out.appendKey(UPPER_KEY, 1, data.subKey(0), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{0}^{\\Uparrow} $", data.subKeyTable(0))
+
+        out.appendKey(LOWER_KEY, -SHIFT + 1, data.subKey(0), TrailVar::lower, BoomerangOptionalSbVar::free, "$ RK_{0}^{\\Downarrow} $", data.subKeyTable(0))
+        out.appendKey(LOWER_KEY, 1, data.subKey(0), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{0}^{\\Downarrow} $", data.subKeyTable(0))
 
         for (i in 0 until data.config.Nr) {
             // X
-            out.appendSbBlock((data.config.Nb + 1) * 1, 21 * i, data.X[i], TrailVar::upper, BoomerangSbVar::free, "$ X_{$i}^{\\Uparrow} $", data.table(i))
-            out.appendSbBlock((data.config.Nb + 1) * 2, 21 * i, data.X[i], TrailVar::lower, BoomerangSbVar::free, "$ X_{$i}^{\\Downarrow} $", data.table(i))
+            out.appendSbBlock(UPPER_TRAIL, ROUND_WIDTH * i, data.X[i], TrailVar::upper, BoomerangSbVar::free, "$ X_{$i}^{\\Uparrow} $", data.table(i))
+            out.appendSbBlock(LOWER_TRAIL, ROUND_WIDTH * i, data.X[i], TrailVar::lower, BoomerangSbVar::free, "$ X_{$i}^{\\Downarrow} $", data.table(i))
 
             // SB
-            out.appendSbBlock((data.config.Nb + 1) * 1, 21 * i + 5, data.X[i], TrailVar::upper, BoomerangSbVar::freeS, "$ SX_{$i}^{\\Uparrow} $", data.table(i))
-            out.appendSbBlock((data.config.Nb + 1) * 2, 21 * i + 5, data.X[i], TrailVar::lower, BoomerangSbVar::freeS, "$ SX_{$i}^{\\Downarrow} $", data.table(i))
+            out.appendSbBlock(UPPER_TRAIL, ROUND_WIDTH * i + SHIFT, data.X[i], TrailVar::upper, BoomerangSbVar::freeS, "$ SX_{$i}^{\\Uparrow} $", data.table(i))
+            out.appendSbBlock(LOWER_TRAIL, ROUND_WIDTH * i + SHIFT, data.X[i], TrailVar::lower, BoomerangSbVar::freeS, "$ SX_{$i}^{\\Downarrow} $", data.table(i))
 
             // SR
-            out.appendLinearBlock((data.config.Nb + 1) * 1, 21 * i + 10, data.Y[i], TrailVar::upper, "$ Y_{$i}^{\\Uparrow} $")
-            out.appendLinearBlock((data.config.Nb + 1) * 2, 21 * i + 10, data.Y[i], TrailVar::lower, "$ Y_{$i}^{\\Downarrow} $")
+            out.appendLinearBlock(UPPER_TRAIL, ROUND_WIDTH * i + 2 * SHIFT, data.Y[i], TrailVar::upper, "$ Y_{$i}^{\\Uparrow} $")
+            out.appendLinearBlock(LOWER_TRAIL, ROUND_WIDTH * i + 2 * SHIFT, data.Y[i], TrailVar::lower, "$ Y_{$i}^{\\Downarrow} $")
 
             // MC
             if (i < data.config.Nr - 1) {
-                out.appendLinearBlock((data.config.Nb + 1) * 1, 21 * i + 15, data.Z[i], TrailVar::upper, "$ Z_{$i}^{\\Uparrow} $")
-                out.appendLinearBlock((data.config.Nb + 1) * 2, 21 * i + 15, data.Z[i], TrailVar::lower, "$ Z_{$i}^{\\Downarrow} $")
+                out.appendLinearBlock(UPPER_TRAIL, ROUND_WIDTH * i + 3 * SHIFT, data.Z[i], TrailVar::upper, "$ Z_{$i}^{\\Uparrow} $")
+                out.appendLinearBlock(LOWER_TRAIL, ROUND_WIDTH * i + 3 * SHIFT, data.Z[i], TrailVar::lower, "$ Z_{$i}^{\\Downarrow} $")
 
-                out.appendKey((data.config.Nb + 1) * 0, 21 * (i + 1) - 4, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-                out.appendKey((data.config.Nb + 1) * 0, 21 * (i + 1) + 1, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
+                out.appendKey(UPPER_KEY, ROUND_WIDTH * (i + 1) - SHIFT + 1, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
+                out.appendKey(UPPER_KEY, ROUND_WIDTH * (i + 1) + 1, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
 
-                out.appendKey((data.config.Nb + 1) * 3, 21 * (i + 1) - 4, data.subKey(i + 1), TrailVar::lower , BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
-                out.appendKey((data.config.Nb + 1) * 3, 21 * (i + 1) + 1, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
+                out.appendKey(LOWER_KEY, ROUND_WIDTH * (i + 1) - SHIFT + 1, data.subKey(i + 1), TrailVar::lower , BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
+                out.appendKey(LOWER_KEY, ROUND_WIDTH * (i + 1) + 1, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
             } else {
-                out.appendKey((data.config.Nb + 1) * 0, 21 * (i + 1) - 9, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
-                out.appendKey((data.config.Nb + 1) * 0, 21 * (i + 1) - 4, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
+                out.appendKey(UPPER_KEY, ROUND_WIDTH * (i + 1) - 2 * SHIFT + 1, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
+                out.appendKey(UPPER_KEY, ROUND_WIDTH * (i + 1) - SHIFT + 1, data.subKey(i + 1), TrailVar::upper, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Uparrow} $", data.subKeyTable(i + 1))
 
-                out.appendKey((data.config.Nb + 1) * 3, 21 * (i + 1) - 9, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
-                out.appendKey((data.config.Nb + 1) * 3, 21 * (i + 1) - 4, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
+                out.appendKey(LOWER_KEY, ROUND_WIDTH * (i + 1) - 2 * SHIFT + 1, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::free, "$ RK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
+                out.appendKey(LOWER_KEY, ROUND_WIDTH * (i + 1) - SHIFT + 1, data.subKey(i + 1), TrailVar::lower, BoomerangOptionalSbVar::freeS, "$ SRK_{${i + 1}}^{\\Downarrow} $", data.subKeyTable(i + 1))
             }
         }
 

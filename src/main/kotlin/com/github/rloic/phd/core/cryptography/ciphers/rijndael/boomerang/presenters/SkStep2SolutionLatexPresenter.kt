@@ -2,16 +2,19 @@ package com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.presen
 
 import com.github.rloic.phd.core.arrays.IntMatrix
 import com.github.rloic.phd.core.arrays.Matrix
+import com.github.rloic.phd.core.cryptography.attacks.ConfiguredBy
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.BoomerangTable
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.BoomerangTable.*
-import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.OptimizeRkStep2Solution
-import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.OptimizeSkStep2Solution
+import com.github.rloic.phd.core.cryptography.ciphers.rijndael.SkRijndael
+import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.solutions.*
 import com.github.rloic.phd.core.utils.Presenter
 import java.io.Closeable
 import java.io.IOException
 
 @Suppress("NonAsciiCharacters")
-class SkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeSkStep2Solution> {
+class SkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
+        where T : ConfiguredBy<SkRijndael>,
+              T : Step2RijndaelBoomerangCipher {
 
     private fun hexa(n: Int): String {
         if (n == 0) return "\\textcolor{gray}{0x00}"
@@ -34,56 +37,66 @@ class SkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeSkS
         EBCT -> "EBCT"
     }
 
-    fun java.lang.Appendable.appendBlock(
-        x: Int,
-        y: Int,
-        values: IntMatrix,
-        name: String? = null,
-        table: Matrix<BoomerangTable> ? =null
-    ) = appendBlock(x, y, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] as Int? }, name, table)
-
-    fun java.lang.Appendable.appendBlock(
-        x: Int,
-        y: Int,
-        values: Matrix<Int?>,
-        name: String? = null,
-        table: Matrix<BoomerangTable> ? =null
-    ) {
-        appendLine("    \\block{$y}{${-x}}{${values.dim2}}{${values.dim1}}{")
-
-        if (name != null) {
-            appendLine("        \\node at (${values.dim2 / 2}, 4.3) { $name };")
-        }
-
-        for (i in 0 until values.dim1) {
-            for (j in 0 until values.dim2) {
-                val value = values[i, j]
-                if (value != null) {
-                    var color = color(table?.get(i, j))
-                    if (value == 256) {
-                        if (color != null) {
-                            color = "FREE!25!$color!75"
-                        } else {
-                            color = "FREE"
-                        }
-                    } else if (value == 0) {
-                        if (color != null) {
-                            color = "ZERO!75!$color!75"
-                        }
-                    }
-                    if (color != null) {
-                        appendLine("        \\draw[fill=$color] ($j, ${values.dim1 - i - 1}) rectangle ++(1, 1);")
-                    }
-                    appendLine("        \\node at (${j + .5}, ${values.dim1 - i - .5}) {$ \\mathtt{${hexa(value)}} $};")
-                }
-
-            }
-        }
-
-        appendLine("    }")
+    private fun Appendable.block(_1: Int, _2: Int, _3: Int, _4: Int, _6: String = "", _5: java.lang.Appendable.() -> Unit) {
+        appendLine("	\\begin{scope}[shift={($_1, $_2)}]")
+        _5()
+        appendLine("		\\draw[$_6] (0, 0) -- ++($_4, 0) -- ++(0, $_3) -- ++({-$_4}, 0) -- cycle;")
+        appendLine("		\\foreach \\i in {1,...,$_4}{")
+        appendLine("			\\draw[$_6] (\\i, 0) -- ++(0, $_3);")
+        appendLine("		}")
+        appendLine("		\\foreach \\i in {1,...,$_3}{")
+        appendLine("			\\draw[$_6] (0, \\i) -- ++($_4, 0);")
+        appendLine("		}")
+        appendLine("	\\end{scope}")
     }
 
-    override fun present(data: OptimizeSkStep2Solution) {
+    fun java.lang.Appendable.appendBlock(
+        y: Int,
+        x: Int,
+        values: IntMatrix,
+        name: String? = null,
+        table: Matrix<BoomerangTable>? = null
+    ) = appendBlock(y, x, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] as Int? }, name, table)
+
+    fun java.lang.Appendable.appendBlock(
+        y: Int,
+        x: Int,
+        values: Matrix<Int?>,
+        name: String? = null,
+        table: Matrix<BoomerangTable>? = null
+    ) {
+        block(x, -y, values.dim1, values.dim2) {
+            if (name != null) {
+                appendLine("        \\node at (${values.dim2 / 2}, 4.3) { $name };")
+            }
+
+            for (i in 0 until values.dim1) {
+                for (j in 0 until values.dim2) {
+                    val value = values[i, j]
+                    if (value != null) {
+                        var color = color(table?.get(i, j))
+                        if (value == 256) {
+                            if (color != null) {
+                                color = "FREE!25!$color!75"
+                            } else {
+                                color = "FREE"
+                            }
+                        } else if (value == 0) {
+                            if (color != null) {
+                                color = "ZERO!75!$color!75"
+                            }
+                        }
+                        if (color != null) {
+                            appendLine("        \\draw[fill=$color] ($j, ${values.dim1 - i - 1}) rectangle ++(1, 1);")
+                        }
+                        appendLine("        \\node at (${j + .5}, ${values.dim1 - i - .5}) {$ \\mathtt{${hexa(value)}} $};")
+                    }
+                }
+            }
+        }
+    }
+
+    override fun present(data: T) {
 
         out.appendLine("\\documentclass[preview]{standalone}")
         out.appendLine("\\usepackage[utf8]{inputenc}")
@@ -98,18 +111,6 @@ class SkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeSkS
         out.appendLine("\\definecolor{EBCT}{HTML}{c1883f}")
         out.appendLine("\\definecolor{FREE}{HTML}{9e9e9e}")
         out.appendLine("\\definecolor{ZERO}{HTML}{ffffff}")
-        out.appendLine("\\newcommand{\\block}[5]{")
-        out.appendLine("	\\begin{scope}[shift={(#1, #2)}]")
-        out.appendLine("		#5")
-        out.appendLine("		\\draw (0, 0) -- ++(#4, 0) -- ++(0, #3) -- ++({-#4}, 0) -- cycle;")
-        out.appendLine("		\\foreach \\i in {1,...,#4}{")
-        out.appendLine("			\\draw (\\i, 0) -- ++(0, #3);")
-        out.appendLine("		}")
-        out.appendLine("		\\foreach \\i in {1,...,#3}{")
-        out.appendLine("			\\draw (0, \\i) -- ++(#4, 0);")
-        out.appendLine("		}")
-        out.appendLine("	\\end{scope}")
-        out.appendLine("}")
         out.appendLine("\\begin{document}")
         out.appendLine("	\\begin{tikzpicture}")
 
@@ -120,23 +121,46 @@ class SkStep2SolutionLatexPresenter(val out: Appendable) : Presenter<OptimizeSkS
         out.appendLine("  \\node[fill=LBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -7) {$\\mathtt{LBCT}$};")
         out.appendLine("  \\node[fill=EBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -8) {$\\mathtt{EBCT}$};")
 
+        val UPPER_KEY = 0
+        val UPPER_TRAIL = 5
+        val LOWER_TRAIL = 10
+        val LOWER_KEY = 15
+
+        val SHIFT = data.config.Nb + 1
+        val ROUND_WIDTH = (SHIFT * 4 + 1)
+
         for (i in 0 until data.config.Nr) {
             // X
-            out.appendBlock((data.config.Nb + 1) * 1, 21 * i, data.δXupper[i], "$ X_{$i}^{\\Uparrow} $", data.table[i])
-            out.appendBlock((data.config.Nb + 1) * 2, 21 * i, data.δXlower[i], "$ X_{$i}^{\\Downarrow} $", data.table[i])
+            out.appendBlock(UPPER_TRAIL, ROUND_WIDTH * i, data.δXupper[i], "$ X_{$i}^{\\Uparrow} $", data.table[i])
+            out.appendBlock(
+                LOWER_TRAIL, ROUND_WIDTH * i,
+                data.δXlower[i],
+                "$ X_{$i}^{\\Downarrow} $",
+                data.table[i]
+            )
 
             // SB
-            out.appendBlock((data.config.Nb + 1) * 1, 21 * i + 5, data.δSXupper[i], "$ SX_{$i}^{\\Uparrow} $", data.table[i])
-            out.appendBlock((data.config.Nb + 1) * 2, 21 * i + 5, data.δSXlower[i], "$ SX_{$i}^{\\Downarrow} $", data.table[i])
+            out.appendBlock(
+                UPPER_TRAIL, ROUND_WIDTH * i + SHIFT,
+                data.δSXupper[i],
+                "$ SX_{$i}^{\\Uparrow} $",
+                data.table[i]
+            )
+            out.appendBlock(
+                LOWER_TRAIL, ROUND_WIDTH * i + SHIFT,
+                data.δSXlower[i],
+                "$ SX_{$i}^{\\Downarrow} $",
+                data.table[i]
+            )
 
             // SR
-            out.appendBlock((data.config.Nb + 1) * 1, 21 * i + 10, data.δYupper[i], "$ Y_{$i}^{\\Uparrow} $")
-            out.appendBlock((data.config.Nb + 1) * 2, 21 * i + 10, data.δYlower[i], "$ Y_{$i}^{\\Downarrow} $")
+            out.appendBlock(UPPER_TRAIL, ROUND_WIDTH * i + 2 * SHIFT, data.δYupper[i], "$ Y_{$i}^{\\Uparrow} $")
+            out.appendBlock(LOWER_TRAIL, ROUND_WIDTH * i + 2 * SHIFT, data.δYlower[i], "$ Y_{$i}^{\\Downarrow} $")
 
             // MC
             if (i < data.config.Nr - 1) {
-                out.appendBlock((data.config.Nb + 1) * 1, 21 * i + 15, data.δZupper[i], "$ Z_{$i}^{\\Uparrow} $")
-                out.appendBlock((data.config.Nb + 1) * 2, 21 * i + 15, data.δZlower[i], "$ Z_{$i}^{\\Downarrow} $")
+                out.appendBlock(UPPER_TRAIL, ROUND_WIDTH * i + 3 * SHIFT, data.δZupper[i], "$ Z_{$i}^{\\Uparrow} $")
+                out.appendBlock(LOWER_TRAIL, ROUND_WIDTH * i + 3 * SHIFT, data.δZlower[i], "$ Z_{$i}^{\\Downarrow} $")
             }
         }
 

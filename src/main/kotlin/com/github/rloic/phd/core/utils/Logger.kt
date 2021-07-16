@@ -99,7 +99,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
                     subscriber.implementation.append(level.msg)
                 }
                 subscriber.implementation.append('\t')
-                subscriber.implementation.append(String.format(fmt, args))
+                subscriber.implementation.append(String.format(fmt, *args))
                 subscriber.implementation.append('\n')
                 if (subscriber.implementation is Writer) {
                     subscriber.implementation.flush()
@@ -135,13 +135,13 @@ class Logger(private val defaultLevel: Level) : Closeable {
     fun trace(msg: Any?) = log(Level.TRACE, msg.toString())
     fun log(msg: Any?) = log(Level.ON, msg.toString())
 
-    fun fatal(fmt: String, vararg args: Any?) = log(Level.FATAL, fmt, args)
-    fun error(fmt: String, vararg args: Any?) = log(Level.ERROR, fmt, args)
-    fun warn(fmt: String, vararg args: Any?) = log(Level.WARN, fmt, args)
-    fun info(fmt: String, vararg args: Any?) = log(Level.INFO, fmt, args)
-    fun debug(fmt: String, vararg args: Any?) = log(Level.DEBUG, fmt, args)
-    fun trace(fmt: String, vararg args: Any?) = log(Level.TRACE, fmt, args)
-    fun log(fmt: String, vararg args: Any?) = log(Level.ON, fmt, args)
+    fun fatal(fmt: String, vararg args: Any?) = log(Level.FATAL, fmt, *args)
+    fun error(fmt: String, vararg args: Any?) = log(Level.ERROR, fmt, *args)
+    fun warn(fmt: String, vararg args: Any?) = log(Level.WARN, fmt, *args)
+    fun info(fmt: String, vararg args: Any?) = log(Level.INFO, fmt, *args)
+    fun debug(fmt: String, vararg args: Any?) = log(Level.DEBUG, fmt, *args)
+    fun trace(fmt: String, vararg args: Any?) = log(Level.TRACE, fmt, *args)
+    fun log(fmt: String, vararg args: Any?) = log(Level.ON, fmt, *args)
 
     fun fatal(msg: () -> Any?) = log(Level.FATAL, msg)
     fun error(msg: () -> Any?) = log(Level.ERROR, msg)

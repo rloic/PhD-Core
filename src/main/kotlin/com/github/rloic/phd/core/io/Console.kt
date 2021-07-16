@@ -2,35 +2,87 @@ package com.github.rloic.phd.core.io
 
 object Console {
 
-    val SUCC = "${success(" SUCC ", fg = true, bg = true)}"
-    val INFO = "${info(" INFO ", fg = true, bg = true)}"
-    val WARN = "${warn(" WARN ", fg = true, bg = true)}"
-    val ERR = "${error(" ERR  ", fg = true, bg = true)}"
+    val SUCC = success(" SUCC  ", fg = true, bg = true)
+    val FATAL = fatal(" FATAL ", true, true)
+    val WARN = warn(" WARN  ", fg = true, bg = true)
+    val ERR = error(" ERROR ", fg = true, bg = true)
+    val INFO = info(" INFO  ", fg = true, bg = true)
+    val DEBUG = debug(" DEBUG ", fg = true, bg = true)
+    val TRACE = trace(" TRACE ", fg = true, bg = true)
 
     fun success(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
-        if (fg) { append(color(0x3c763d)) }
-        if (bg) { append(bg(0xdff0d8)) }
+        if (fg) {
+            append(color(0x3c763d))
+        }
+        if (bg) {
+            append(bg(0xdff0d8))
+        }
+        append(s)
+        append(reset())
+    }
+
+    fun fatal(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) {
+            append(color(0xa94442))
+        }
+        if (bg) {
+            append(bg(0xf2dede))
+        }
         append(s)
         append(reset())
     }
 
     fun error(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
-        if (fg) { append(color(0xa94442)) }
-        if (bg) { append(bg(0xf2dede)) }
+        if (fg) {
+            append(color(0xa94442))
+        }
+        if (bg) {
+            append(bg(0xf2dede))
+        }
         append(s)
         append(reset())
     }
 
     fun warn(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
-        if (fg) { append(color(0x8a6d3b)) }
-        if (bg) { append(bg(0xfcf8e3)) }
+        if (fg) {
+            append(color(0x8a6d3b))
+        }
+        if (bg) {
+            append(bg(0xfcf8e3))
+        }
         append(s)
         append(reset())
     }
 
     fun info(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
-        if (fg) { append(color(0x31708f)) }
-        if (bg) { append(bg(0xd9edf7)) }
+        if (fg) {
+            append(color(0x31708f))
+        }
+        if (bg) {
+            append(bg(0xd9edf7))
+        }
+        append(s)
+        append(reset())
+    }
+
+    fun debug(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) {
+            append(color(0))
+        }
+        if (bg) {
+            append(color(0))
+        }
+        append(s)
+        append(reset())
+    }
+
+    fun trace(s: String, fg: Boolean = true, bg: Boolean = false) = buildString {
+        if (fg) {
+            append(color(0))
+        }
+        if (bg) {
+            append(color(0))
+        }
         append(s)
         append(reset())
     }

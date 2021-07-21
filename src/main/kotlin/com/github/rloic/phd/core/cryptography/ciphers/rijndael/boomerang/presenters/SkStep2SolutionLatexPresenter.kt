@@ -24,7 +24,7 @@ class SkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         if (hexString.length == 1) {
             prefix += "0"
         }
-        return prefix + hexString.toUpperCase()
+        return prefix + hexString.uppercase()
     }
 
     private fun color(t: BoomerangTable?) = when (t) {
@@ -56,7 +56,7 @@ class SkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         values: IntMatrix,
         name: String? = null,
         table: Matrix<BoomerangTable>? = null
-    ) = appendBlock(y, x, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] as Int? }, name, table)
+    ) = appendBlock(y, x, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] }, name, table)
 
     fun java.lang.Appendable.appendBlock(
         y: Int,
@@ -121,10 +121,10 @@ class SkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         out.appendLine("  \\node[fill=LBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -7) {$\\mathtt{LBCT}$};")
         out.appendLine("  \\node[fill=EBCT, draw=black, minimum height=1cm,minimum width=1cm] at (-2, -8) {$\\mathtt{EBCT}$};")
 
-        val UPPER_KEY = 0
+        // val UPPER_KEY = 0
         val UPPER_TRAIL = 5
         val LOWER_TRAIL = 10
-        val LOWER_KEY = 15
+        // val LOWER_KEY = 15
 
         val SHIFT = data.config.Nb + 1
         val ROUND_WIDTH = (SHIFT * 4 + 1)

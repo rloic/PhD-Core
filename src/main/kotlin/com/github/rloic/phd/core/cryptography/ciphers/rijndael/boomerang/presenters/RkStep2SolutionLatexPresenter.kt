@@ -24,7 +24,7 @@ class RkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         if (hexString.length == 1) {
             prefix += "0"
         }
-        return prefix + hexString.toUpperCase()
+        return prefix + hexString.uppercase()
     }
 
     private fun color(t: BoomerangTable?) = when (t) {
@@ -56,7 +56,7 @@ class RkStep2SolutionLatexPresenter<T>(val out: Appendable) : Presenter<T>
         values: IntMatrix,
         name: String? = null,
         table: Matrix<BoomerangTable>? = null
-    ) = appendBlock(y, x, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] as Int? }, name, table)
+    ) = appendBlock(y, x, Matrix(values.dim1, values.dim2) { i, j -> values[i, j] }, name, table)
 
     fun java.lang.Appendable.appendBlock(
         y: Int,

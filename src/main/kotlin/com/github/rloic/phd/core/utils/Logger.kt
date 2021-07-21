@@ -22,10 +22,11 @@ class Logger(private val defaultLevel: Level) : Closeable {
         })
     }
 
-    private data class Subscriber<T : Appendable>(
+    private class Subscriber<T : Appendable>(
         val implementation: T,
         val acceptAnsiColors: Boolean,
-        val autoCloseIfPossible: Boolean
+        val autoCloseIfPossible: Boolean,
+        val printLoggerHeader: Boolean
     )
 
     enum class Level(val msg: String, private val fgColor: Int) : Comparable<Level> {
@@ -53,6 +54,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         subscriber: T,
         acceptAnsiColors: Boolean = false,
         autoCloseIfPossible: Boolean = true,
+        printLoggerHeader: Boolean = true,
         overrideLevel: Level? = null
     ) {
         val level = overrideLevel ?: defaultLevel
@@ -60,7 +62,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         if (subscribersLevels[level.ordinal - 1].any { it.implementation == subscriber }) {
             return
         }
-        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, acceptAnsiColors, autoCloseIfPossible)
+        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, acceptAnsiColors, autoCloseIfPossible, printLoggerHeader)
         assert(subscribersLevels.flatten().count { it.implementation == subscriber } == 1)
     }
 
@@ -74,12 +76,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         assert(level != Level.OFF)
         for (iLevel in level.ordinal - 1 until Level.ALL.ordinal) {
             for (subscriber in subscribersLevels[iLevel]) {
-                if (subscriber.acceptAnsiColors) {
-                    subscriber.implementation.append(level.ansiMsg())
-                } else {
-                    subscriber.implementation.append(level.msg)
-                }
-                subscriber.implementation.append('\t')
+                subscriber.printHeader(level)
                 subscriber.implementation.append(msg)
                 subscriber.implementation.append('\n')
                 if (subscriber.implementation is Writer) {
@@ -89,17 +86,23 @@ class Logger(private val defaultLevel: Level) : Closeable {
         }
     }
 
-    private fun log(level: Level, fmt: String, vararg args: Any?) {
+    private fun <T: Appendable> Subscriber<T>.printHeader(level: Level) {
+        if (printLoggerHeader) {
+            if (acceptAnsiColors) {
+                implementation.append(level.ansiMsg())
+            } else {
+                implementation.append(level.msg)
+            }
+            implementation.append('\t')
+        }
+    }
+
+    private fun log(level: Level, fmt: String, arg: Any?, vararg args: Any?) {
         assert(level != Level.OFF)
         for (iLevel in level.ordinal - 1 until Level.ALL.ordinal) {
             for (subscriber in subscribersLevels[iLevel]) {
-                if (subscriber.acceptAnsiColors) {
-                    subscriber.implementation.append(level.ansiMsg())
-                } else {
-                    subscriber.implementation.append(level.msg)
-                }
-                subscriber.implementation.append('\t')
-                subscriber.implementation.append(String.format(fmt, *args))
+                subscriber.printHeader(level)
+                subscriber.implementation.append(String.format(fmt, arg, *args))
                 subscriber.implementation.append('\n')
                 if (subscriber.implementation is Writer) {
                     subscriber.implementation.flush()
@@ -112,12 +115,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         assert(level != Level.OFF)
         for (iLevel in level.ordinal - 1 until Level.ALL.ordinal) {
             for (subscriber in subscribersLevels[iLevel]) {
-                if (subscriber.acceptAnsiColors) {
-                    subscriber.implementation.append(level.ansiMsg())
-                } else {
-                    subscriber.implementation.append(level.msg)
-                }
-                subscriber.implementation.append('\t')
+                subscriber.printHeader(level)
                 subscriber.implementation.append(msg().toString())
                 subscriber.implementation.append('\n')
                 if (subscriber.implementation is Writer) {
@@ -135,13 +133,13 @@ class Logger(private val defaultLevel: Level) : Closeable {
     fun trace(msg: Any?) = log(Level.TRACE, msg.toString())
     fun log(msg: Any?) = log(Level.ON, msg.toString())
 
-    fun fatal(fmt: String, vararg args: Any?) = log(Level.FATAL, fmt, *args)
-    fun error(fmt: String, vararg args: Any?) = log(Level.ERROR, fmt, *args)
-    fun warn(fmt: String, vararg args: Any?) = log(Level.WARN, fmt, *args)
-    fun info(fmt: String, vararg args: Any?) = log(Level.INFO, fmt, *args)
-    fun debug(fmt: String, vararg args: Any?) = log(Level.DEBUG, fmt, *args)
-    fun trace(fmt: String, vararg args: Any?) = log(Level.TRACE, fmt, *args)
-    fun log(fmt: String, vararg args: Any?) = log(Level.ON, fmt, *args)
+    fun fatal(fmt: String, arg: Any?, vararg args: Any?) = log(Level.FATAL, fmt, arg, *args)
+    fun error(fmt: String, arg: Any?, vararg args: Any?) = log(Level.ERROR, fmt, arg, *args)
+    fun warn(fmt: String, arg: Any?, vararg args: Any?) = log(Level.WARN, fmt, arg, *args)
+    fun info(fmt: String, arg: Any?, vararg args: Any?) = log(Level.INFO, fmt, arg, *args)
+    fun debug(fmt: String, arg: Any?, vararg args: Any?) = log(Level.DEBUG, fmt, arg, *args)
+    fun trace(fmt: String, arg: Any?, vararg args: Any?) = log(Level.TRACE, fmt, arg, *args)
+    fun log(fmt: String, arg: Any?, vararg args: Any?) = log(Level.ON, fmt, arg, *args)
 
     fun fatal(msg: () -> Any?) = log(Level.FATAL, msg)
     fun error(msg: () -> Any?) = log(Level.ERROR, msg)

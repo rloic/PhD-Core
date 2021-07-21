@@ -69,6 +69,7 @@ open class Rijndael(val Nr: Int, val textSize: TextSize) {
             return tuples
         }
 
+        @Suppress("NAME_SHADOWING")
         fun galoisFieldMul(a: Int, b: Int): Int {
             var p = 0; var a = a; var b= b
             for (counter in 0 until log2(SBOX.size)) {

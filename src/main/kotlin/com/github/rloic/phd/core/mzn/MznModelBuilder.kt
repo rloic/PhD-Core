@@ -25,10 +25,16 @@ interface MznModelBuilder<Model: MznModel> {
     class CompleteAssignment(
         val modelParts: List<PartialMznModel>,
         val forbiddenSolution: File,
+        val searchConfiguration: MznSearchConfiguration? = null,
         val completeAssignment: (MznSolution) -> Assignment.Complete
     ) : MznModelBuilder<MznModel.CompleteSearch> {
         override fun build(target: File): MznModel.CompleteSearch {
             modelParts.compileInto(target)
+            if (searchConfiguration != null) {
+                target.appendText("%%% Configure Search %%%\n")
+                target.appendText(searchConfiguration.toMzn().raw)
+                target.appendText("\n")
+            }
 
             val forbiddenSolutionText = forbiddenSolution.readText()
             var solutionId = 0
@@ -46,19 +52,16 @@ interface MznModelBuilder<Model: MznModel> {
 
     class PartialAssignment(
         val modelParts: List<PartialMznModel>,
-        val decisionVars: PartialMznModel,
-        val strategy: SearchStrategy,
-        val valueSelector: ValueSelector,
+        val searchConfiguration: MznSearchConfiguration,
         val forbiddenSolution: PartialMznModel,
         val partialAssignment: (MznSolution) -> Assignment.Partial
     ) : MznModelBuilder<MznModel.PartialSearch> {
 
         override fun build(target: File): MznModel.PartialSearch {
             modelParts.compileInto(target)
-            target.appendText("%%% Configure search %%%\n")
-            target.appendText("solve :: int_search(\n  ")
-            target.concat(decisionVars.file)
-            target.appendText("  , ${strategy.mzn}, ${valueSelector.mzn}, complete\n) satisfy;\n")
+            target.appendText("%%% Configure Search %%%\n")
+            target.appendText(searchConfiguration.toMzn().raw)
+            target.appendText("\n")
 
             val forbiddenSolutionText = forbiddenSolution.file.readText()
             var solutionId = 0

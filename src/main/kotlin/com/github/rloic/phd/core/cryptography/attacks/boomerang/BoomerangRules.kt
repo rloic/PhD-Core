@@ -40,11 +40,13 @@ object BoomerangRules {
     ) = isDDTupper(DXupper, freeXupper, freeSBupper, DXlower, freeXlower, freeSBlower) ||
             isDDTLower(DXupper, freeXupper, freeSBupper, DXlower, freeXlower, freeSBlower)
 
+    @Suppress("UNUSED_PARAMETER")
     fun isDDTupper(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,
     ) = (DXupper == 1 && (freeXupper == 0) && (freeSBupper == 0) && (DXlower == 0))
 
+    @Suppress("UNUSED_PARAMETER")
     fun isDDTLower(
         DXupper: Int?, freeXupper: Int?, freeSBupper: Int?,
         DXlower: Int?, freeXlower: Int?, freeSBlower: Int?,

@@ -22,11 +22,14 @@ class Logger(private val defaultLevel: Level) : Closeable {
         })
     }
 
+    enum class HeaderMode {
+        ANSI, TEXT, NONE
+    }
+
     private class Subscriber<T : Appendable>(
         val implementation: T,
-        val acceptAnsiColors: Boolean,
-        val autoCloseIfPossible: Boolean,
-        val printLoggerHeader: Boolean
+        val headerMode: HeaderMode,
+        val autoCloseIfPossible: Boolean
     )
 
     enum class Level(val msg: String, private val fgColor: Int) : Comparable<Level> {
@@ -52,9 +55,8 @@ class Logger(private val defaultLevel: Level) : Closeable {
 
     fun <T : Appendable> addSubscriber(
         subscriber: T,
-        acceptAnsiColors: Boolean = false,
+        header: HeaderMode = HeaderMode.NONE,
         autoCloseIfPossible: Boolean = true,
-        printLoggerHeader: Boolean = true,
         overrideLevel: Level? = null
     ) {
         val level = overrideLevel ?: defaultLevel
@@ -62,7 +64,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         if (subscribersLevels[level.ordinal - 1].any { it.implementation == subscriber }) {
             return
         }
-        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, acceptAnsiColors, autoCloseIfPossible, printLoggerHeader)
+        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, header, autoCloseIfPossible)
         assert(subscribersLevels.flatten().count { it.implementation == subscriber } == 1)
     }
 
@@ -87,13 +89,14 @@ class Logger(private val defaultLevel: Level) : Closeable {
     }
 
     private fun <T: Appendable> Subscriber<T>.printHeader(level: Level) {
-        if (printLoggerHeader) {
-            if (acceptAnsiColors) {
-                implementation.append(level.ansiMsg())
-            } else {
-                implementation.append(level.msg)
-            }
-            implementation.append('\t')
+        when (headerMode) {
+            HeaderMode.ANSI -> { implementation.append(level.ansiMsg()) }
+            HeaderMode.TEXT -> { implementation.append(level.msg) }
+            HeaderMode.NONE -> {}
+        }
+        when (headerMode) {
+            HeaderMode.NONE -> {}
+            else -> implementation.append('\t')
         }
     }
 

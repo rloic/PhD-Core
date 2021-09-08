@@ -22,6 +22,11 @@ class Tensor3<T>(val dim1: Int, val dim2: Int, val dim3: Int, init: (Int, Int, I
         init(i, j, k)
     }
 
+    operator fun get(range: IntRange): Tensor3<T> {
+        val selection = range.map(this::get)
+        return Tensor3(selection.size, dim2, dim3) { i, j, k -> selection[i][j][k] }
+    }
+
     operator fun get(i: Int) = Matrix(dim2, dim3) { j, k -> this[i, j, k] }
     operator fun get(i: Int, j: Int): List<T> = List(dim3) { k -> this[i, j, k] }
     operator fun get(i: Int, j: Int, k: Int) = data[DIMENSIONS.compose(i, j, k)]

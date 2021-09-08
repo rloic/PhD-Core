@@ -10,13 +10,18 @@ interface MznModelBuilder<Model: MznModel> {
     class Optimization(
         val modelParts: List<PartialMznModel>,
         val objectiveVar: MznVariable,
-        val search: OptimizationSearch
+        val search: OptimizationSearch,
+        val decisionVars: PartialMznModel? = null
     ) : MznModelBuilder<MznModel.Optimization> {
 
         override fun build(target: File): MznModel.Optimization {
             modelParts.compileInto(target)
             target.appendText("%%% Objective %%%\n")
-            target.appendText("solve $search ${objectiveVar.name};\n")
+            if (decisionVars == null) {
+                target.appendText("solve $search ${objectiveVar.name};\n")
+            } else {
+                target.appendText("solve :: int_search(${decisionVars.file.readText()}, smallest, indomain_min) $search ${objectiveVar.name};\n")
+            }
 
             return MznModel.Optimization(target, objectiveVar, search)
         }

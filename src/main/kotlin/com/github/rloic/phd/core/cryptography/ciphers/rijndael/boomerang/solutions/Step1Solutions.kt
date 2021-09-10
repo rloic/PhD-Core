@@ -67,6 +67,8 @@ open class EnumerateRijndaelBoomerangRkStep1Solution(
 class OptimizeRijndaelBoomerangRkStep1Solution(
     override val config: RkRijndael,
     override val objStep1: Int,
+    val keyProba: Int,
+    val textProba: Int,
     override val X: Tensor3<BoomerangSbVar>,
     override val Y: Tensor3<BoomerangLinVar>,
     override val Z: Tensor3<BoomerangLinVar>,

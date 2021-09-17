@@ -14,10 +14,12 @@ interface MznSolutionParser<T>: Parser<MznSolution, T> {
         .filterNot { it.isBlank() }
         .mapToInt { if (it.equals("true", false) || it == "1") 1 else 0 }
 
-    fun String.parseObjective() = substringAfter("= ").substringBeforeLast(';').toInt()
+    fun String.parseInt() = substringAfter("= ").substringBeforeLast(';').toInt()
+    fun String.parseBool() = substringAfter("= ").substringBeforeLast(';').toBoolean()
 
     fun List<String>.getIntArray(key: String) = toLinear(first { it.startsWith(key) })
 
-    fun List<String>.getIntValue(key: String) = first { it.startsWith(key) }.parseObjective()
+    fun List<String>.getIntValue(key: String) = first { it.startsWith(key) }.parseInt()
+    fun List<String>.getBoolValue(key: String) = first { it.startsWith(key) }.parseBool()
 
 }

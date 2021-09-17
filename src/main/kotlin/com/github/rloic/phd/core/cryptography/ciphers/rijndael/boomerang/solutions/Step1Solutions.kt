@@ -19,6 +19,12 @@ interface RijndaelBoomerangCipher {
     val X: Tensor3<BoomerangSbVar>
     val Y: Tensor3<BoomerangLinVar>
     val Z: Tensor3<BoomerangLinVar>
+    val ATTACK_I: Boolean
+    val ATTACK_II: Boolean
+    val ATTACK_III: Boolean
+    val p2q2r: Int
+    val rb: Int
+    val rf: Int
 }
 
 fun <T> T.table(i: Int) where T: ConfiguredBy<out SkRijndael>, T: RijndaelBoomerangCipher =
@@ -41,6 +47,12 @@ class EnumerateRijndaelBoomerangSkStep1Solution(
     override val X: Tensor3<BoomerangSbVar>,
     override val Y: Tensor3<BoomerangLinVar>,
     override val Z: Tensor3<BoomerangLinVar>,
+    override val ATTACK_I: Boolean,
+    override val ATTACK_II: Boolean,
+    override val ATTACK_III: Boolean,
+    override val p2q2r: Int,
+    override val rb: Int,
+    override val rf: Int,
 ) : ConfiguredBy<SkRijndael>, RijndaelBoomerangCipher
 
 @Suppress("NonAsciiCharacters")
@@ -50,6 +62,12 @@ class OptimizeRijndaelBoomerangSkStep1Solution(
     override val X: Tensor3<BoomerangSbVar>,
     override val Y: Tensor3<BoomerangLinVar>,
     override val Z: Tensor3<BoomerangLinVar>,
+    override val ATTACK_I: Boolean,
+    override val ATTACK_II: Boolean,
+    override val ATTACK_III: Boolean,
+    override val p2q2r: Int,
+    override val rb: Int,
+    override val rf: Int,
 ) : ConfiguredBy<SkRijndael>, Step1Solution, RijndaelBoomerangCipher
 
 @Suppress("NonAsciiCharacters")
@@ -58,7 +76,13 @@ open class EnumerateRijndaelBoomerangRkStep1Solution(
     override val X: Tensor3<BoomerangSbVar>,
     override val Y: Tensor3<BoomerangLinVar>,
     override val Z: Tensor3<BoomerangLinVar>,
-    override val WK: Matrix<BoomerangOptionalSbVar>
+    override val WK: Matrix<BoomerangOptionalSbVar>,
+    override val ATTACK_I: Boolean,
+    override val ATTACK_II: Boolean,
+    override val ATTACK_III: Boolean,
+    override val p2q2r: Int,
+    override val rb: Int,
+    override val rf: Int,
 ) : ConfiguredBy<RkRijndael>, RijndaelBoomerangCipherWithKeySchedule
 
 
@@ -70,5 +94,11 @@ class OptimizeRijndaelBoomerangRkStep1Solution(
     override val X: Tensor3<BoomerangSbVar>,
     override val Y: Tensor3<BoomerangLinVar>,
     override val Z: Tensor3<BoomerangLinVar>,
-    override val WK: Matrix<BoomerangOptionalSbVar>
+    override val WK: Matrix<BoomerangOptionalSbVar>,
+    override val ATTACK_I: Boolean,
+    override val ATTACK_II: Boolean,
+    override val ATTACK_III: Boolean,
+    override val p2q2r: Int,
+    override val rb: Int,
+    override val rf: Int,
 ) : ConfiguredBy<RkRijndael>, Step1Solution, RijndaelBoomerangCipherWithKeySchedule

@@ -22,7 +22,7 @@ interface RijndaelBoomerangCipher {
     val ATTACK_I: Boolean
     val ATTACK_II: Boolean
     val ATTACK_III: Boolean
-    val p2q2r: Int
+    val twoT: Int
     val rb: Int
     val rf: Int
 }
@@ -50,7 +50,7 @@ class EnumerateRijndaelBoomerangSkStep1Solution(
     override val ATTACK_I: Boolean,
     override val ATTACK_II: Boolean,
     override val ATTACK_III: Boolean,
-    override val p2q2r: Int,
+    override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
 ) : ConfiguredBy<SkRijndael>, RijndaelBoomerangCipher
@@ -65,7 +65,7 @@ class OptimizeRijndaelBoomerangSkStep1Solution(
     override val ATTACK_I: Boolean,
     override val ATTACK_II: Boolean,
     override val ATTACK_III: Boolean,
-    override val p2q2r: Int,
+    override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
 ) : ConfiguredBy<SkRijndael>, Step1Solution, RijndaelBoomerangCipher
@@ -80,7 +80,7 @@ open class EnumerateRijndaelBoomerangRkStep1Solution(
     override val ATTACK_I: Boolean,
     override val ATTACK_II: Boolean,
     override val ATTACK_III: Boolean,
-    override val p2q2r: Int,
+    override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
 ) : ConfiguredBy<RkRijndael>, RijndaelBoomerangCipherWithKeySchedule
@@ -98,7 +98,7 @@ class OptimizeRijndaelBoomerangRkStep1Solution(
     override val ATTACK_I: Boolean,
     override val ATTACK_II: Boolean,
     override val ATTACK_III: Boolean,
-    override val p2q2r: Int,
+    override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
 ) : ConfiguredBy<RkRijndael>, Step1Solution, RijndaelBoomerangCipherWithKeySchedule

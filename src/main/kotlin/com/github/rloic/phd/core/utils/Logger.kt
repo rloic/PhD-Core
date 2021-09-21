@@ -6,12 +6,18 @@ import java.io.Writer
 import java.lang.Appendable
 import java.lang.Exception
 
-var logger = Logger(Logger.Level.OFF)
+var logger = Logger(Logger.Level.OFF, true)
 
-class Logger(private val defaultLevel: Level) : Closeable {
+class Logger(
+    private val defaultLevel: Level,
+    private val scriptMode: Boolean
+) : Closeable {
 
     companion object : FromArgs<Logger> {
-        override fun from(args: Map<String, String>) = Logger(Level.valueOf(args["Logger.level"] ?: "ON"))
+        override fun from(args: Map<String, String>) = Logger(
+            Level.valueOf(args["Logger.level"] ?: "ON"),
+            args["Logger.scriptMode"]?.toBoolean() ?: false
+        )
     }
 
     init {
@@ -53,6 +59,8 @@ class Logger(private val defaultLevel: Level) : Closeable {
 
     private val subscribersLevels = MutableList(8) { mutableListOf<Subscriber<Appendable>>() }
 
+    fun addTerminal() = logger.addSubscriber(System.out, HeaderMode.ANSI, false)
+
     fun <T : Appendable> addSubscriber(
         subscriber: T,
         header: HeaderMode = HeaderMode.NONE,
@@ -64,7 +72,7 @@ class Logger(private val defaultLevel: Level) : Closeable {
         if (subscribersLevels[level.ordinal - 1].any { it.implementation == subscriber }) {
             return
         }
-        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, header, autoCloseIfPossible)
+        subscribersLevels[level.ordinal - 1] += Subscriber(subscriber, if (scriptMode) HeaderMode.NONE else header, autoCloseIfPossible)
         assert(subscribersLevels.flatten().count { it.implementation == subscriber } == 1)
     }
 

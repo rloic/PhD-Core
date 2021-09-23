@@ -20,6 +20,7 @@ interface MznSolutionParser<T>: Parser<MznSolution, T> {
     fun List<String>.getIntArray(key: String) = toLinear(first { it.startsWith(key) })
 
     fun List<String>.getIntValue(key: String) = first { it.startsWith(key) }.parseInt()
+    fun List<String>.getIntValueOr(key: String, def: Int) = firstOrNull { it.startsWith(key) }?.parseInt() ?: def
     fun List<String>.getBoolValue(key: String) = first { it.startsWith(key) }.parseBool()
 
 }

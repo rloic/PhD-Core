@@ -2,15 +2,15 @@ package com.github.rloic.phd.core.cryptography.attacks.differential
 
 class Sbox(
     private val sbox: IntArray,
-    private val invSbox: IntArray
 ) {
     val values = 0 until sbox.size
     val size = sbox.size
 
+    private val invSbox: IntArray = IntArray(sbox.size)
+
     init {
-        check(sbox.size == invSbox.size)
         for (i in values) {
-            check(invSbox[sbox[i]] == i)
+            invSbox[sbox[i]] = i
         }
     }
 

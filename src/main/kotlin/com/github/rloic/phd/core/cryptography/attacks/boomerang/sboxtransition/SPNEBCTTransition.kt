@@ -3,21 +3,21 @@
 package com.github.rloic.phd.core.cryptography.attacks.boomerang.sboxtransition
 
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.util.XorExpr
-import com.github.rloic.phd.core.cryptography.attacks.boomerang.SboxTables
+import com.github.rloic.phd.core.cryptography.attacks.boomerang.SPNSboxTables
 import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.Variable
 
-class EBCTTransition(val γ: XorExpr, val θ: XorExpr, val λ: XorExpr, val δ: XorExpr) : SboxTransition {
+class SPNEBCTTransition(val γ: XorExpr, val θ: XorExpr, val λ: XorExpr, val δ: XorExpr) : SPNSboxTransition {
 
     companion object {
         @JvmStatic
-        fun transitionOf(γ: XorExpr, θ: XorExpr?, λ: XorExpr?, δ: XorExpr): SboxTransition {
+        fun transitionOf(γ: XorExpr, θ: XorExpr?, λ: XorExpr?, δ: XorExpr): SPNSboxTransition {
             return when {
-                θ == null -> LBCTTransition.transitionOf(γ, λ, δ)
-                λ == null -> UBCTTransition.transitionOf(γ, θ, δ)
-                γ.isZero && θ.isZero -> DDTTransition(λ, δ)
-                λ.isZero && δ.isZero -> DDTTransition(γ, θ)
+                θ == null -> SPNLBCTTransition.transitionOf(γ, λ, δ)
+                λ == null -> SPNUBCTTransition.transitionOf(γ, θ, δ)
+                γ.isZero && θ.isZero -> SPNDDTTransition(λ, δ)
+                λ.isZero && δ.isZero -> SPNDDTTransition(γ, θ)
                 γ.isZero && θ.isZero && λ.isZero || δ.isZero -> throw IllegalStateException("")
-                else -> EBCTTransition(γ, θ, λ, δ)
+                else -> SPNEBCTTransition(γ, θ, λ, δ)
             }
         }
     }
@@ -26,17 +26,17 @@ class EBCTTransition(val γ: XorExpr, val θ: XorExpr, val λ: XorExpr, val δ: 
     override val isInteresting = true
 
     override fun imposeVariable(variable: Variable, value: Int) =
-        EBCTTransition(
+        SPNEBCTTransition(
             γ.imposeVariable(variable, value),
             θ.imposeVariable(variable, value),
             λ.imposeVariable(variable, value),
             δ.imposeVariable(variable, value)
         )
 
-    override fun getCstProba(tables: SboxTables) =
+    override fun getCstProba(tables: SPNSboxTables) =
         tables.ebctProba(γ.ensureCst(), θ.ensureCst(), λ.ensureCst(), δ.ensureCst())
 
-    override fun getVariableDomain(variable: Variable, tables: SboxTables) =
+    override fun getVariableDomain(variable: Variable, tables: SPNSboxTables) =
         outputDiffDDT(γ, θ, tables, variable)
             ?: inputDiffsDDT(θ, γ, tables, variable)
             ?: outputDiffDDT(λ, δ, tables, variable)

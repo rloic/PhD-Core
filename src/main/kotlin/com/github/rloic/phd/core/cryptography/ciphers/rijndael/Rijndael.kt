@@ -1,7 +1,6 @@
 package com.github.rloic.phd.core.cryptography.ciphers.rijndael
 
-import com.github.rloic.phd.core.cryptography.SboxTuples
-import com.github.rloic.phd.core.cryptography.attacks.boomerang.SboxTables
+import com.github.rloic.phd.core.cryptography.attacks.boomerang.SPNSboxTables
 import com.github.rloic.phd.core.cryptography.attacks.differential.Sbox
 import com.github.rloic.phd.core.cryptography.utils.generateXorTuples
 import com.github.rloic.phd.core.cryptography.utils.log2
@@ -46,13 +45,13 @@ open class Rijndael(val Nr: Int, val textSize: TextSize) {
             0, 1, 3, 4
         ).reshape(5, 4)
 
-        private val SBOX = Sbox(intArrayFrom(getResourceAsFile("sboxes/rijndael/sb.txt")), intArrayFrom(getResourceAsFile("sboxes/rijndael/sb_inv.txt")))
+        private val SBOX = Sbox(intArrayFrom(getResourceAsFile("sboxes/rijndael/sb.txt")))
 
         val OPTIMAL_SBOX_TRANSITION = intArrayFrom(getResourceAsFile("sboxes/rijndael/best_sb_transition.txt"))
         val OPTIMAL_INV_SBOX_TRANSITION = intArrayFrom(getResourceAsFile("sboxes/rijndael/best_sb_inv_transition.txt"))
 
         val XOR_TUPLES = generateXorTuples(SBOX.values)
-        val SBOX_TABLES = SboxTables(SBOX)
+        val SBOX_TABLES = SPNSboxTables(SBOX)
 
         val mul2: Tuples = buildTimes(2)
         val mul3: Tuples = buildTimes(3)

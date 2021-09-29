@@ -13,7 +13,7 @@ import javaextensions.lang.double
 import org.chocosolver.solver.constraints.extension.Tuples
 import kotlin.math.log2
 
-class SboxTables(
+class SPNSboxTables(
     val S: Sbox,
     val probaFactor: Int = 1
 ) {

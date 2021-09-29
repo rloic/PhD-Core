@@ -3,18 +3,18 @@
 package com.github.rloic.phd.core.cryptography.attacks.boomerang.sboxtransition
 
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.util.XorExpr
-import com.github.rloic.phd.core.cryptography.attacks.boomerang.SboxTables
+import com.github.rloic.phd.core.cryptography.attacks.boomerang.SPNSboxTables
 import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.Variable
 
-class LBCTTransition(val γ: XorExpr, val λ: XorExpr, val δ: XorExpr) : SboxTransition {
+class SPNLBCTTransition(val γ: XorExpr, val λ: XorExpr, val δ: XorExpr) : SPNSboxTransition {
 
     companion object {
         @JvmStatic
-        fun transitionOf(gamma: XorExpr, lambda: XorExpr?, δ: XorExpr): SboxTransition {
+        fun transitionOf(gamma: XorExpr, lambda: XorExpr?, δ: XorExpr): SPNSboxTransition {
             return when {
-                lambda == null -> BCTTransition(gamma, δ)
-                gamma.isZero -> DDTTransition(lambda, δ)
-                else -> LBCTTransition(gamma, lambda, δ)
+                lambda == null -> SPNBCTTransition(gamma, δ)
+                gamma.isZero -> SPNDDTTransition(lambda, δ)
+                else -> SPNLBCTTransition(gamma, lambda, δ)
             }
         }
     }
@@ -26,15 +26,15 @@ class LBCTTransition(val γ: XorExpr, val λ: XorExpr, val δ: XorExpr) : SboxTr
     override val isInteresting = true
 
     override fun imposeVariable(variable: Variable, value: Int) =
-        LBCTTransition(
+        SPNLBCTTransition(
             γ.imposeVariable(variable, value),
             λ.imposeVariable(variable, value),
             δ.imposeVariable(variable, value)
         )
 
-    override fun getCstProba(tables: SboxTables) = tables.lbctProba(γ.ensureCst(), λ.ensureCst(), δ.ensureCst())
+    override fun getCstProba(tables: SPNSboxTables) = tables.lbctProba(γ.ensureCst(), λ.ensureCst(), δ.ensureCst())
 
-    override fun getVariableDomain(variable: Variable, tables: SboxTables) =
+    override fun getVariableDomain(variable: Variable, tables: SPNSboxTables) =
         outputDiffDDT(λ, δ, tables, variable)
             ?: inputDiffsDDT(δ, λ, tables, variable)
             ?: tables.values

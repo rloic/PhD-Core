@@ -5,7 +5,7 @@ import com.github.rloic.phd.core.cryptography.attacks.differential.Sbox
 class Skinny8 {
 
     companion object {
-        val SBOX = Sbox(intArrayOf(), intArrayOf())
+        val SBOX = Sbox(intArrayOf())
     }
 
 }

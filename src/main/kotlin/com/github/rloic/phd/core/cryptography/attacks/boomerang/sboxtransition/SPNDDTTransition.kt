@@ -3,24 +3,24 @@
 package com.github.rloic.phd.core.cryptography.attacks.boomerang.sboxtransition
 
 import com.github.rloic.phd.core.cryptography.attacks.boomerang.util.Expr
-import com.github.rloic.phd.core.cryptography.attacks.boomerang.SboxTables
+import com.github.rloic.phd.core.cryptography.attacks.boomerang.SPNSboxTables
 import com.github.rloic.phd.core.cryptography.ciphers.rijndael.boomerang.Variable
 
-class DDTTransition(val α: Expr, val β: Expr) : SboxTransition {
+class SPNDDTTransition(val α: Expr, val β: Expr) : SPNSboxTransition {
 
     override val variables by lazy { (α.variables + β.variables).toSet() }
 
     override val isInteresting = true
 
     override fun imposeVariable(variable: Variable, value: Int) =
-        DDTTransition(
+        SPNDDTTransition(
             α.imposeVariable(variable, value),
             β.imposeVariable(variable, value)
         )
 
-    override fun getCstProba(tables: SboxTables) = tables.ddtProba(α.ensureCst(), β.ensureCst())
+    override fun getCstProba(tables: SPNSboxTables) = tables.ddtProba(α.ensureCst(), β.ensureCst())
 
-    override fun getVariableDomain(variable: Variable, tables: SboxTables) =
+    override fun getVariableDomain(variable: Variable, tables: SPNSboxTables) =
         outputDiffDDT(α, β, tables, variable)
             ?: inputDiffsDDT(β, α, tables, variable)
             ?: tables.values

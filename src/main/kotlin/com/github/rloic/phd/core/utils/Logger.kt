@@ -1,10 +1,10 @@
 package com.github.rloic.phd.core.utils
 
 import com.github.rloic.phd.core.io.Console
+import java.io.BufferedWriter
 import java.io.Closeable
+import java.io.FileWriter
 import java.io.Writer
-import java.lang.Appendable
-import java.lang.Exception
 
 var logger = Logger(Logger.Level.OFF, true)
 
@@ -59,7 +59,16 @@ class Logger(
 
     private val subscribersLevels = MutableList(8) { mutableListOf<Subscriber<Appendable>>() }
 
+    fun addTerminal(level: Level) = logger.addSubscriber(System.out, HeaderMode.ANSI, false, level)
     fun addTerminal() = logger.addSubscriber(System.out, HeaderMode.ANSI, false)
+    fun addLogFile(fileName: String) {
+        val logWriter = BufferedWriter(FileWriter(fileName))
+        logger.addSubscriber(logWriter, HeaderMode.NONE, true)
+    }
+    fun addLogFile(fileName: String, level: Level) {
+        val logWriter = BufferedWriter(FileWriter(fileName))
+        logger.addSubscriber(logWriter, HeaderMode.NONE, true, level)
+    }
 
     fun <T : Appendable> addSubscriber(
         subscriber: T,

@@ -11,16 +11,23 @@ interface MznModelBuilder<Model: MznModel> {
         val modelParts: List<PartialMznModel>,
         val objectiveVar: MznVariable,
         val search: OptimizationSearch,
-        val decisionVars: PartialMznModel? = null
+        val decisionVars: PartialMznModel? = null,
+        val output: (() -> MznContent)? = null,
     ) : MznModelBuilder<MznModel.Optimization> {
 
         override fun build(target: File): MznModel.Optimization {
             modelParts.compileInto(target)
             target.appendText("%%% Objective %%%\n")
+
+            if (output != null) {
+                target.appendText("%%% Configure output %%%\n")
+                target.appendText("output [\n${output.invoke().raw}\n];\n")
+            }
+
             if (decisionVars == null) {
                 target.appendText("solve $search ${objectiveVar.name};\n")
             } else {
-                target.appendText("solve :: int_search(${decisionVars.file.readText()}, smallest, indomain_min) $search ${objectiveVar.name};\n")
+                target.appendText("solve :: int_search(${decisionVars.file.readText()}, smallest, indomain_min, complete) $search ${objectiveVar.name};\n")
             }
 
             return MznModel.Optimization(target, objectiveVar, search)
@@ -31,7 +38,8 @@ interface MznModelBuilder<Model: MznModel> {
         val modelParts: List<PartialMznModel>,
         val forbiddenSolution: File,
         val searchConfiguration: MznSearchConfiguration? = null,
-        val completeAssignment: (MznSolution) -> Assignment.Complete
+        val completeAssignment: (MznSolution) -> Assignment.Complete,
+        val output: (() -> MznContent)? = null,
     ) : MznModelBuilder<MznModel.CompleteSearch> {
         override fun build(target: File): MznModel.CompleteSearch {
             modelParts.compileInto(target)
@@ -39,6 +47,11 @@ interface MznModelBuilder<Model: MznModel> {
                 target.appendText("%%% Configure Search %%%\n")
                 target.appendText(searchConfiguration.toMzn().raw)
                 target.appendText("\n")
+            }
+
+            if (output != null) {
+                target.appendText("%%% Configure output %%%\n")
+                target.appendText("output [\n${output.invoke().raw}\n];\n")
             }
 
             val forbiddenSolutionText = forbiddenSolution.readText()
@@ -59,7 +72,8 @@ interface MznModelBuilder<Model: MznModel> {
         val modelParts: List<PartialMznModel>,
         val searchConfiguration: MznSearchConfiguration,
         val forbiddenSolution: PartialMznModel,
-        val partialAssignment: (MznSolution) -> Assignment.Partial
+        val partialAssignment: (MznSolution) -> Assignment.Partial,
+        val output: (() -> MznContent)? = null,
     ) : MznModelBuilder<MznModel.PartialSearch> {
 
         override fun build(target: File): MznModel.PartialSearch {
@@ -67,6 +81,11 @@ interface MznModelBuilder<Model: MznModel> {
             target.appendText("%%% Configure Search %%%\n")
             target.appendText(searchConfiguration.toMzn().raw)
             target.appendText("\n")
+
+            if (output != null) {
+                target.appendText("%%% Configure output %%%\n")
+                target.appendText("output [\n${output.invoke().raw}\n];\n")
+            }
 
             val forbiddenSolutionText = forbiddenSolution.file.readText()
             var solutionId = 0

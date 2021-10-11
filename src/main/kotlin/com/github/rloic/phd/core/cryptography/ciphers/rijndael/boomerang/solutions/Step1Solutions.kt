@@ -26,6 +26,7 @@ interface RijndaelBoomerangCipher {
     val twoT: Int
     val rb: Int
     val rf: Int
+    val timeComplexity: Int
 }
 
 fun <T> T.table(i: Int) where T: ConfiguredBy<out SkRijndael>, T: RijndaelBoomerangCipher =
@@ -55,6 +56,7 @@ class EnumerateRijndaelBoomerangSkStep1Solution(
     override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
+    override val timeComplexity: Int,
 ) : ConfiguredBy<SkRijndael>, RijndaelBoomerangCipher
 
 @Suppress("NonAsciiCharacters")
@@ -71,6 +73,7 @@ class OptimizeRijndaelBoomerangSkStep1Solution(
     override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
+    override val timeComplexity: Int,
 ) : ConfiguredBy<SkRijndael>, Step1Solution, RijndaelBoomerangCipher
 
 @Suppress("NonAsciiCharacters")
@@ -87,6 +90,7 @@ open class EnumerateRijndaelBoomerangRkStep1Solution(
     override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
+    override val timeComplexity: Int,
 ) : ConfiguredBy<RkRijndael>, RijndaelBoomerangCipherWithKeySchedule
 
 
@@ -106,4 +110,5 @@ class OptimizeRijndaelBoomerangRkStep1Solution(
     override val twoT: Int,
     override val rb: Int,
     override val rf: Int,
+    override val timeComplexity: Int,
 ) : ConfiguredBy<RkRijndael>, Step1Solution, RijndaelBoomerangCipherWithKeySchedule

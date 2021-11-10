@@ -7,7 +7,8 @@ import com.github.rloic.phd.core.mzn.MznSolver
 class ForbidPreviousPartialSolutionIterator(
     private val solver: MznSolver,
     private val model: MznModel.PartialSearch,
-    private val data: Map<String, Any>
+    private val data: Map<String, Any>,
+    private val mznArgs: Array<out String>,
 ) : Iterator<MznSolution> {
 
     var unSat = false
@@ -15,7 +16,7 @@ class ForbidPreviousPartialSolutionIterator(
 
     override fun hasNext(): Boolean {
         if (solution == null && !unSat) {
-            val newSolution = solver.solveOnce(model, data)
+            val newSolution = solver.solveOnce(model, data, *mznArgs)
             if (newSolution != null) {
                 solution = newSolution
             } else {

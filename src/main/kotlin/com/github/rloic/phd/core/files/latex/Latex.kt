@@ -8,12 +8,25 @@ import java.util.*
 
 object Latex {
 
+    fun <T> write(fn: (Appendable) -> Presenter<T>, data: T, path: String) {
+        val rawContent = StringBuilder()
+        val presenter = fn(rawContent)
+        presenter.present(data)
+        write(LatexDocument(LatexContent(rawContent.toString())), path)
+        presenter.close()
+    }
+
     fun <T> preview(fn: (Appendable) -> Presenter<T>, data: T) {
         val rawContent = StringBuilder()
         val presenter = fn(rawContent)
         presenter.present(data)
         preview(LatexDocument(LatexContent(rawContent.toString())))
         presenter.close()
+    }
+
+    fun write(latexDocument: LatexDocument, path: String? = null) {
+        val texFile = if (path != null) File(path) else File.createTempFile("test", ".tex")
+        texFile.writeText(latexDocument.content.rawContent)
     }
 
     fun preview(latexDocument: LatexDocument) {

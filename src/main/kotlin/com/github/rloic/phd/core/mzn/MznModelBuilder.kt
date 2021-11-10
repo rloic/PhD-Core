@@ -24,10 +24,16 @@ interface MznModelBuilder<Model: MznModel> {
                 target.appendText("output [\n${output.invoke().raw}\n];\n")
             }
 
+            val valueSelector = if (search == OptimizationSearch.Minimize) { "indomain_min" } else { "indomain_max" }
+
             if (decisionVars == null) {
-                target.appendText("solve $search ${objectiveVar.name};\n")
+                target.appendText("""
+                    solve :: int_search([${objectiveVar.name}], dom_w_deg, $valueSelector, complete) minimize ${objectiveVar.name};
+                """.trimIndent())
             } else {
-                target.appendText("solve :: int_search(${decisionVars.file.readText()}, smallest, indomain_min, complete) $search ${objectiveVar.name};\n")
+                target.appendText("""
+                    solve :: int_search([${objectiveVar.name}] ++ ${decisionVars.file.readText()}, dom_w_deg, indomain_min, complete) $search ${objectiveVar.name};
+                """.trimIndent())
             }
 
             return MznModel.Optimization(target, objectiveVar, search)

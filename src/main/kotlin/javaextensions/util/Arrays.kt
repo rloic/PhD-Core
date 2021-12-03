@@ -1,7 +1,7 @@
 package javaextensions.util
 
-import com.github.rloic.phd.core.arrays.IntMatrix
-import com.github.rloic.phd.core.arrays.IntTensor3
+import com.github.phd.core.arrays.IntMatrix
+import com.github.phd.core.arrays.IntTensor3
 import java.io.File
 import java.lang.Integer.parseInt
 
